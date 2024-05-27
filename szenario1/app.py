@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 import psycopg2
+from psycopg2 import sql
 from opentelemetry import trace
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor
@@ -80,6 +81,40 @@ def insert_employee():
     conn.close()
 
     return "Employee created"
+
+@app.route('/employees/delete', methods=["POST"])
+def delete_employee(): 
+    id = request.args.get("id")
+
+    conn = psycopg2.connect(**db_params)
+    cursor = conn.cursor()
+
+    delete_query = '''DELETE FROM employees WHERE (id=%s)'''
+    cursor.execute(delete_query, id)
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+    return "Employee deleted"
+
+@app.route('/employees/updatePosition', methods=["POST"])
+def update_employee(): 
+    data = request.get_json()
+
+    if not data or not all(key in data for key in ['id', 'position']):
+        return jsonify({'error': 'Invalid input'}), 400
+
+    conn = psycopg2.connect(**db_params)
+    cursor = conn.cursor()
+
+    update_query = '''UPDATE employees SET position = %s WHERE id = %s'''
+    
+    cursor.execute(update_query, (data["position"], data["id"]))
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+    return "Employee updated"
 
 @app.route('/orders')
 def get_orders():
