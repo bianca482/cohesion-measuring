@@ -1,0 +1,17 @@
+{
+  "Servers": {
+    "1": {
+      "Name": "szenario_db",
+      "Group": "Servers",
+      "Host": "szenario_db",
+      "Port": 5432,
+      "MaintenanceDB": "postgres",
+      "Username": "postgres",
+      "KerberosAuthentication": false,
+      "ConnectionParameters": {
+        "sslmode": "prefer",
+        "passfile": "./servers.pgpass"
+      }
+    }
+  }
+}

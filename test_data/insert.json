@@ -1,0 +1,1149 @@
+{
+  "data": [
+    {
+      "traceID": "81b542bfc159ae0337abfc3c2d64d0b7",
+      "spans": [
+        {
+          "traceID": "81b542bfc159ae0337abfc3c2d64d0b7",
+          "spanID": "c7649170f4eba7b5",
+          "operationName": "/employees/insert",
+          "references": [],
+          "startTime": 1716794714966901,
+          "duration": 66096,
+          "tags": [
+            { "key": "error", "type": "bool", "value": true },
+            { "key": "http.flavor", "type": "string", "value": "1.1" },
+            { "key": "http.host", "type": "string", "value": "localhost:5001" },
+            { "key": "http.method", "type": "string", "value": "POST" },
+            {
+              "key": "http.route",
+              "type": "string",
+              "value": "/employees/insert"
+            },
+            { "key": "http.scheme", "type": "string", "value": "http" },
+            { "key": "http.server_name", "type": "string", "value": "0.0.0.0" },
+            { "key": "http.status_code", "type": "int64", "value": 500 },
+            {
+              "key": "http.target",
+              "type": "string",
+              "value": "/employees/insert"
+            },
+            {
+              "key": "http.user_agent",
+              "type": "string",
+              "value": "PostmanRuntime/7.37.3"
+            },
+            {
+              "key": "internal.span.format",
+              "type": "string",
+              "value": "otlp"
+            },
+            { "key": "net.host.port", "type": "int64", "value": 5000 },
+            {
+              "key": "net.peer.ip",
+              "type": "string",
+              "value": "192.168.144.1"
+            },
+            { "key": "net.peer.port", "type": "int64", "value": 46434 },
+            { "key": "otel.status_code", "type": "string", "value": "ERROR" },
+            {
+              "key": "otel.status_description",
+              "type": "string",
+              "value": "UndefinedTable: relation \"employees\" does not exist\nLINE 1: INSERT INTO employees (name, position, start_date) VALUES ('...\n                    ^\n"
+            },
+            { "key": "span.kind", "type": "string", "value": "server" }
+          ],
+          "logs": [
+            {
+              "timestamp": 1716794715032962,
+              "fields": [
+                { "key": "event", "type": "string", "value": "exception" },
+                {
+                  "key": "exception.escaped",
+                  "type": "string",
+                  "value": "False"
+                },
+                {
+                  "key": "exception.message",
+                  "type": "string",
+                  "value": "relation \"employees\" does not exist\nLINE 1: INSERT INTO employees (name, position, start_date) VALUES ('...\n                    ^\n"
+                },
+                {
+                  "key": "exception.stacktrace",
+                  "type": "string",
+                  "value": "Traceback (most recent call last):\n  File \"/usr/local/lib/python3.9/site-packages/opentelemetry/trace/__init__.py\", line 570, in use_span\n    yield span\n  File \"/usr/local/lib/python3.9/site-packages/flask/app.py\", line 1473, in wsgi_app\n    response = self.full_dispatch_request()\n  File \"/usr/local/lib/python3.9/site-packages/flask/app.py\", line 882, in full_dispatch_request\n    rv = self.handle_user_exception(e)\n  File \"/usr/local/lib/python3.9/site-packages/flask/app.py\", line 880, in full_dispatch_request\n    rv = self.dispatch_request()\n  File \"/usr/local/lib/python3.9/site-packages/flask/app.py\", line 865, in dispatch_request\n    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]\n  File \"/home/app.py\", line 77, in insert_employee\n    cursor.execute(insert_query, (data[\"name\"], data[\"position\"], startDate))\n  File \"/usr/local/lib/python3.9/site-packages/opentelemetry/instrumentation/psycopg2/__init__.py\", line 249, in execute\n    return _cursor_tracer.traced_execution(\n  File \"/usr/local/lib/python3.9/site-packages/opentelemetry/instrumentation/dbapi/__init__.py\", line 460, in traced_execution\n    return query_method(*args, **kwargs)\npsycopg2.errors.UndefinedTable: relation \"employees\" does not exist\nLINE 1: INSERT INTO employees (name, position, start_date) VALUES ('...\n                    ^\n\n"
+                },
+                {
+                  "key": "exception.type",
+                  "type": "string",
+                  "value": "UndefinedTable"
+                }
+              ]
+            }
+          ],
+          "processID": "p1",
+          "warnings": [],
+          "process": {
+            "serviceName": "szenario1",
+            "tags": [
+              {
+                "key": "otel.library.name",
+                "type": "string",
+                "value": "opentelemetry.instrumentation.flask"
+              },
+              {
+                "key": "otel.library.version",
+                "type": "string",
+                "value": "0.45b0"
+              },
+              {
+                "key": "telemetry.sdk.language",
+                "type": "string",
+                "value": "python"
+              },
+              {
+                "key": "telemetry.sdk.name",
+                "type": "string",
+                "value": "opentelemetry"
+              },
+              {
+                "key": "telemetry.sdk.version",
+                "type": "string",
+                "value": "1.24.0"
+              }
+            ]
+          },
+          "relativeStartTime": 0,
+          "depth": 0,
+          "hasChildren": true,
+          "childSpanIds": ["a4eea99d6c296179"]
+        },
+        {
+          "traceID": "81b542bfc159ae0337abfc3c2d64d0b7",
+          "spanID": "a4eea99d6c296179",
+          "operationName": "INSERT",
+          "references": [
+            {
+              "refType": "CHILD_OF",
+              "traceID": "81b542bfc159ae0337abfc3c2d64d0b7",
+              "spanID": "c7649170f4eba7b5",
+              "span": {
+                "traceID": "81b542bfc159ae0337abfc3c2d64d0b7",
+                "spanID": "c7649170f4eba7b5",
+                "operationName": "/employees/insert",
+                "references": [],
+                "startTime": 1716794714966901,
+                "duration": 66096,
+                "tags": [
+                  { "key": "error", "type": "bool", "value": true },
+                  { "key": "http.flavor", "type": "string", "value": "1.1" },
+                  {
+                    "key": "http.host",
+                    "type": "string",
+                    "value": "localhost:5001"
+                  },
+                  { "key": "http.method", "type": "string", "value": "POST" },
+                  {
+                    "key": "http.route",
+                    "type": "string",
+                    "value": "/employees/insert"
+                  },
+                  { "key": "http.scheme", "type": "string", "value": "http" },
+                  {
+                    "key": "http.server_name",
+                    "type": "string",
+                    "value": "0.0.0.0"
+                  },
+                  { "key": "http.status_code", "type": "int64", "value": 500 },
+                  {
+                    "key": "http.target",
+                    "type": "string",
+                    "value": "/employees/insert"
+                  },
+                  {
+                    "key": "http.user_agent",
+                    "type": "string",
+                    "value": "PostmanRuntime/7.37.3"
+                  },
+                  {
+                    "key": "internal.span.format",
+                    "type": "string",
+                    "value": "otlp"
+                  },
+                  { "key": "net.host.port", "type": "int64", "value": 5000 },
+                  {
+                    "key": "net.peer.ip",
+                    "type": "string",
+                    "value": "192.168.144.1"
+                  },
+                  { "key": "net.peer.port", "type": "int64", "value": 46434 },
+                  {
+                    "key": "otel.status_code",
+                    "type": "string",
+                    "value": "ERROR"
+                  },
+                  {
+                    "key": "otel.status_description",
+                    "type": "string",
+                    "value": "UndefinedTable: relation \"employees\" does not exist\nLINE 1: INSERT INTO employees (name, position, start_date) VALUES ('...\n                    ^\n"
+                  },
+                  { "key": "span.kind", "type": "string", "value": "server" }
+                ],
+                "logs": [
+                  {
+                    "timestamp": 1716794715032962,
+                    "fields": [
+                      {
+                        "key": "event",
+                        "type": "string",
+                        "value": "exception"
+                      },
+                      {
+                        "key": "exception.escaped",
+                        "type": "string",
+                        "value": "False"
+                      },
+                      {
+                        "key": "exception.message",
+                        "type": "string",
+                        "value": "relation \"employees\" does not exist\nLINE 1: INSERT INTO employees (name, position, start_date) VALUES ('...\n                    ^\n"
+                      },
+                      {
+                        "key": "exception.stacktrace",
+                        "type": "string",
+                        "value": "Traceback (most recent call last):\n  File \"/usr/local/lib/python3.9/site-packages/opentelemetry/trace/__init__.py\", line 570, in use_span\n    yield span\n  File \"/usr/local/lib/python3.9/site-packages/flask/app.py\", line 1473, in wsgi_app\n    response = self.full_dispatch_request()\n  File \"/usr/local/lib/python3.9/site-packages/flask/app.py\", line 882, in full_dispatch_request\n    rv = self.handle_user_exception(e)\n  File \"/usr/local/lib/python3.9/site-packages/flask/app.py\", line 880, in full_dispatch_request\n    rv = self.dispatch_request()\n  File \"/usr/local/lib/python3.9/site-packages/flask/app.py\", line 865, in dispatch_request\n    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]\n  File \"/home/app.py\", line 77, in insert_employee\n    cursor.execute(insert_query, (data[\"name\"], data[\"position\"], startDate))\n  File \"/usr/local/lib/python3.9/site-packages/opentelemetry/instrumentation/psycopg2/__init__.py\", line 249, in execute\n    return _cursor_tracer.traced_execution(\n  File \"/usr/local/lib/python3.9/site-packages/opentelemetry/instrumentation/dbapi/__init__.py\", line 460, in traced_execution\n    return query_method(*args, **kwargs)\npsycopg2.errors.UndefinedTable: relation \"employees\" does not exist\nLINE 1: INSERT INTO employees (name, position, start_date) VALUES ('...\n                    ^\n\n"
+                      },
+                      {
+                        "key": "exception.type",
+                        "type": "string",
+                        "value": "UndefinedTable"
+                      }
+                    ]
+                  }
+                ],
+                "processID": "p1",
+                "warnings": [],
+                "process": {
+                  "serviceName": "szenario1",
+                  "tags": [
+                    {
+                      "key": "otel.library.name",
+                      "type": "string",
+                      "value": "opentelemetry.instrumentation.flask"
+                    },
+                    {
+                      "key": "otel.library.version",
+                      "type": "string",
+                      "value": "0.45b0"
+                    },
+                    {
+                      "key": "telemetry.sdk.language",
+                      "type": "string",
+                      "value": "python"
+                    },
+                    {
+                      "key": "telemetry.sdk.name",
+                      "type": "string",
+                      "value": "opentelemetry"
+                    },
+                    {
+                      "key": "telemetry.sdk.version",
+                      "type": "string",
+                      "value": "1.24.0"
+                    }
+                  ]
+                },
+                "relativeStartTime": 0,
+                "depth": 0,
+                "hasChildren": true,
+                "childSpanIds": ["a4eea99d6c296179"]
+              }
+            }
+          ],
+          "startTime": 1716794715023805,
+          "duration": 6062,
+          "tags": [
+            { "key": "db.name", "type": "string", "value": "szenariodb" },
+            {
+              "key": "db.statement",
+              "type": "string",
+              "value": "INSERT INTO employees (name, position, start_date) VALUES (%s, %s, %s)"
+            },
+            { "key": "db.system", "type": "string", "value": "postgresql" },
+            { "key": "db.user", "type": "string", "value": "postgres" },
+            { "key": "error", "type": "bool", "value": true },
+            {
+              "key": "internal.span.format",
+              "type": "string",
+              "value": "otlp"
+            },
+            {
+              "key": "net.peer.name",
+              "type": "string",
+              "value": "szenario_db"
+            },
+            { "key": "net.peer.port", "type": "int64", "value": 5432 },
+            { "key": "otel.status_code", "type": "string", "value": "ERROR" },
+            {
+              "key": "otel.status_description",
+              "type": "string",
+              "value": "UndefinedTable: relation \"employees\" does not exist\nLINE 1: INSERT INTO employees (name, position, start_date) VALUES ('...\n                    ^\n"
+            },
+            { "key": "span.kind", "type": "string", "value": "client" }
+          ],
+          "logs": [
+            {
+              "timestamp": 1716794715029799,
+              "fields": [
+                { "key": "event", "type": "string", "value": "exception" },
+                {
+                  "key": "exception.escaped",
+                  "type": "string",
+                  "value": "False"
+                },
+                {
+                  "key": "exception.message",
+                  "type": "string",
+                  "value": "relation \"employees\" does not exist\nLINE 1: INSERT INTO employees (name, position, start_date) VALUES ('...\n                    ^\n"
+                },
+                {
+                  "key": "exception.stacktrace",
+                  "type": "string",
+                  "value": "Traceback (most recent call last):\n  File \"/usr/local/lib/python3.9/site-packages/opentelemetry/trace/__init__.py\", line 570, in use_span\n    yield span\n  File \"/usr/local/lib/python3.9/site-packages/opentelemetry/sdk/trace/__init__.py\", line 1071, in start_as_current_span\n    yield span\n  File \"/usr/local/lib/python3.9/site-packages/opentelemetry/instrumentation/dbapi/__init__.py\", line 460, in traced_execution\n    return query_method(*args, **kwargs)\npsycopg2.errors.UndefinedTable: relation \"employees\" does not exist\nLINE 1: INSERT INTO employees (name, position, start_date) VALUES ('...\n                    ^\n\n"
+                },
+                {
+                  "key": "exception.type",
+                  "type": "string",
+                  "value": "UndefinedTable"
+                }
+              ]
+            }
+          ],
+          "processID": "p2",
+          "warnings": [],
+          "process": {
+            "serviceName": "szenario1",
+            "tags": [
+              {
+                "key": "otel.library.name",
+                "type": "string",
+                "value": "opentelemetry.instrumentation.psycopg2"
+              },
+              {
+                "key": "otel.library.version",
+                "type": "string",
+                "value": "0.45b0"
+              },
+              {
+                "key": "telemetry.sdk.language",
+                "type": "string",
+                "value": "python"
+              },
+              {
+                "key": "telemetry.sdk.name",
+                "type": "string",
+                "value": "opentelemetry"
+              },
+              {
+                "key": "telemetry.sdk.version",
+                "type": "string",
+                "value": "1.24.0"
+              }
+            ]
+          },
+          "relativeStartTime": 56904,
+          "depth": 1,
+          "hasChildren": false,
+          "childSpanIds": []
+        }
+      ],
+      "processes": {
+        "p1": {
+          "serviceName": "szenario1",
+          "tags": [
+            {
+              "key": "otel.library.name",
+              "type": "string",
+              "value": "opentelemetry.instrumentation.flask"
+            },
+            {
+              "key": "otel.library.version",
+              "type": "string",
+              "value": "0.45b0"
+            },
+            {
+              "key": "telemetry.sdk.language",
+              "type": "string",
+              "value": "python"
+            },
+            {
+              "key": "telemetry.sdk.name",
+              "type": "string",
+              "value": "opentelemetry"
+            },
+            {
+              "key": "telemetry.sdk.version",
+              "type": "string",
+              "value": "1.24.0"
+            }
+          ]
+        },
+        "p2": {
+          "serviceName": "szenario1",
+          "tags": [
+            {
+              "key": "otel.library.name",
+              "type": "string",
+              "value": "opentelemetry.instrumentation.psycopg2"
+            },
+            {
+              "key": "otel.library.version",
+              "type": "string",
+              "value": "0.45b0"
+            },
+            {
+              "key": "telemetry.sdk.language",
+              "type": "string",
+              "value": "python"
+            },
+            {
+              "key": "telemetry.sdk.name",
+              "type": "string",
+              "value": "opentelemetry"
+            },
+            {
+              "key": "telemetry.sdk.version",
+              "type": "string",
+              "value": "1.24.0"
+            }
+          ]
+        }
+      },
+      "warnings": null
+    },
+    {
+      "traceID": "d96207d2261ddda4e3f8253016b506d4",
+      "spans": [
+        {
+          "traceID": "d96207d2261ddda4e3f8253016b506d4",
+          "spanID": "34bc2bae63d2ca1e",
+          "operationName": "SELECT",
+          "references": [
+            {
+              "refType": "CHILD_OF",
+              "traceID": "d96207d2261ddda4e3f8253016b506d4",
+              "spanID": "c488e474bb7cfb21",
+              "span": {
+                "traceID": "d96207d2261ddda4e3f8253016b506d4",
+                "spanID": "c488e474bb7cfb21",
+                "operationName": "/employees",
+                "references": [],
+                "startTime": 1716794728760971,
+                "duration": 53409,
+                "tags": [
+                  { "key": "error", "type": "bool", "value": true },
+                  { "key": "http.flavor", "type": "string", "value": "1.1" },
+                  {
+                    "key": "http.host",
+                    "type": "string",
+                    "value": "localhost:5001"
+                  },
+                  { "key": "http.method", "type": "string", "value": "GET" },
+                  {
+                    "key": "http.route",
+                    "type": "string",
+                    "value": "/employees"
+                  },
+                  { "key": "http.scheme", "type": "string", "value": "http" },
+                  {
+                    "key": "http.server_name",
+                    "type": "string",
+                    "value": "0.0.0.0"
+                  },
+                  { "key": "http.status_code", "type": "int64", "value": 500 },
+                  {
+                    "key": "http.target",
+                    "type": "string",
+                    "value": "/employees"
+                  },
+                  {
+                    "key": "http.user_agent",
+                    "type": "string",
+                    "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+                  },
+                  {
+                    "key": "internal.span.format",
+                    "type": "string",
+                    "value": "otlp"
+                  },
+                  { "key": "net.host.port", "type": "int64", "value": 5000 },
+                  {
+                    "key": "net.peer.ip",
+                    "type": "string",
+                    "value": "192.168.144.1"
+                  },
+                  { "key": "net.peer.port", "type": "int64", "value": 47294 },
+                  {
+                    "key": "otel.status_code",
+                    "type": "string",
+                    "value": "ERROR"
+                  },
+                  {
+                    "key": "otel.status_description",
+                    "type": "string",
+                    "value": "UndefinedTable: relation \"customers\" does not exist\nLINE 1: SELECT * FROM customers /*controller='get_employees',db_driv...\n                      ^\n"
+                  },
+                  { "key": "span.kind", "type": "string", "value": "server" }
+                ],
+                "logs": [
+                  {
+                    "timestamp": 1716794728814279,
+                    "fields": [
+                      {
+                        "key": "event",
+                        "type": "string",
+                        "value": "exception"
+                      },
+                      {
+                        "key": "exception.escaped",
+                        "type": "string",
+                        "value": "False"
+                      },
+                      {
+                        "key": "exception.message",
+                        "type": "string",
+                        "value": "relation \"customers\" does not exist\nLINE 1: SELECT * FROM customers /*controller='get_employees',db_driv...\n                      ^\n"
+                      },
+                      {
+                        "key": "exception.stacktrace",
+                        "type": "string",
+                        "value": "Traceback (most recent call last):\n  File \"/usr/local/lib/python3.9/site-packages/opentelemetry/trace/__init__.py\", line 570, in use_span\n    yield span\n  File \"/usr/local/lib/python3.9/site-packages/flask/app.py\", line 1473, in wsgi_app\n    response = self.full_dispatch_request()\n  File \"/usr/local/lib/python3.9/site-packages/flask/app.py\", line 882, in full_dispatch_request\n    rv = self.handle_user_exception(e)\n  File \"/usr/local/lib/python3.9/site-packages/flask/app.py\", line 880, in full_dispatch_request\n    rv = self.dispatch_request()\n  File \"/usr/local/lib/python3.9/site-packages/flask/app.py\", line 865, in dispatch_request\n    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]\n  File \"/home/app.py\", line 47, in get_employees\n    cursor.execute(\"SELECT * FROM customers\")\n  File \"/usr/local/lib/python3.9/site-packages/opentelemetry/instrumentation/psycopg2/__init__.py\", line 249, in execute\n    return _cursor_tracer.traced_execution(\n  File \"/usr/local/lib/python3.9/site-packages/opentelemetry/instrumentation/dbapi/__init__.py\", line 460, in traced_execution\n    return query_method(*args, **kwargs)\npsycopg2.errors.UndefinedTable: relation \"customers\" does not exist\nLINE 1: SELECT * FROM customers /*controller='get_employees',db_driv...\n                      ^\n\n"
+                      },
+                      {
+                        "key": "exception.type",
+                        "type": "string",
+                        "value": "UndefinedTable"
+                      }
+                    ]
+                  }
+                ],
+                "processID": "p2",
+                "warnings": [],
+                "process": {
+                  "serviceName": "szenario1",
+                  "tags": [
+                    {
+                      "key": "otel.library.name",
+                      "type": "string",
+                      "value": "opentelemetry.instrumentation.flask"
+                    },
+                    {
+                      "key": "otel.library.version",
+                      "type": "string",
+                      "value": "0.45b0"
+                    },
+                    {
+                      "key": "telemetry.sdk.language",
+                      "type": "string",
+                      "value": "python"
+                    },
+                    {
+                      "key": "telemetry.sdk.name",
+                      "type": "string",
+                      "value": "opentelemetry"
+                    },
+                    {
+                      "key": "telemetry.sdk.version",
+                      "type": "string",
+                      "value": "1.24.0"
+                    }
+                  ]
+                },
+                "relativeStartTime": 0,
+                "depth": 0,
+                "hasChildren": true,
+                "childSpanIds": ["34bc2bae63d2ca1e"]
+              }
+            }
+          ],
+          "startTime": 1716794728803909,
+          "duration": 3373,
+          "tags": [
+            { "key": "db.name", "type": "string", "value": "szenariodb" },
+            {
+              "key": "db.statement",
+              "type": "string",
+              "value": "SELECT * FROM customers"
+            },
+            { "key": "db.system", "type": "string", "value": "postgresql" },
+            { "key": "db.user", "type": "string", "value": "postgres" },
+            { "key": "error", "type": "bool", "value": true },
+            {
+              "key": "internal.span.format",
+              "type": "string",
+              "value": "otlp"
+            },
+            {
+              "key": "net.peer.name",
+              "type": "string",
+              "value": "szenario_db"
+            },
+            { "key": "net.peer.port", "type": "int64", "value": 5432 },
+            { "key": "otel.status_code", "type": "string", "value": "ERROR" },
+            {
+              "key": "otel.status_description",
+              "type": "string",
+              "value": "UndefinedTable: relation \"customers\" does not exist\nLINE 1: SELECT * FROM customers /*controller='get_employees',db_driv...\n                      ^\n"
+            },
+            { "key": "span.kind", "type": "string", "value": "client" }
+          ],
+          "logs": [
+            {
+              "timestamp": 1716794728807135,
+              "fields": [
+                { "key": "event", "type": "string", "value": "exception" },
+                {
+                  "key": "exception.escaped",
+                  "type": "string",
+                  "value": "False"
+                },
+                {
+                  "key": "exception.message",
+                  "type": "string",
+                  "value": "relation \"customers\" does not exist\nLINE 1: SELECT * FROM customers /*controller='get_employees',db_driv...\n                      ^\n"
+                },
+                {
+                  "key": "exception.stacktrace",
+                  "type": "string",
+                  "value": "Traceback (most recent call last):\n  File \"/usr/local/lib/python3.9/site-packages/opentelemetry/trace/__init__.py\", line 570, in use_span\n    yield span\n  File \"/usr/local/lib/python3.9/site-packages/opentelemetry/sdk/trace/__init__.py\", line 1071, in start_as_current_span\n    yield span\n  File \"/usr/local/lib/python3.9/site-packages/opentelemetry/instrumentation/dbapi/__init__.py\", line 460, in traced_execution\n    return query_method(*args, **kwargs)\npsycopg2.errors.UndefinedTable: relation \"customers\" does not exist\nLINE 1: SELECT * FROM customers /*controller='get_employees',db_driv...\n                      ^\n\n"
+                },
+                {
+                  "key": "exception.type",
+                  "type": "string",
+                  "value": "UndefinedTable"
+                }
+              ]
+            }
+          ],
+          "processID": "p1",
+          "warnings": [],
+          "process": {
+            "serviceName": "szenario1",
+            "tags": [
+              {
+                "key": "otel.library.name",
+                "type": "string",
+                "value": "opentelemetry.instrumentation.psycopg2"
+              },
+              {
+                "key": "otel.library.version",
+                "type": "string",
+                "value": "0.45b0"
+              },
+              {
+                "key": "telemetry.sdk.language",
+                "type": "string",
+                "value": "python"
+              },
+              {
+                "key": "telemetry.sdk.name",
+                "type": "string",
+                "value": "opentelemetry"
+              },
+              {
+                "key": "telemetry.sdk.version",
+                "type": "string",
+                "value": "1.24.0"
+              }
+            ]
+          },
+          "relativeStartTime": 42938,
+          "depth": 1,
+          "hasChildren": false,
+          "childSpanIds": []
+        },
+        {
+          "traceID": "d96207d2261ddda4e3f8253016b506d4",
+          "spanID": "c488e474bb7cfb21",
+          "operationName": "/employees",
+          "references": [],
+          "startTime": 1716794728760971,
+          "duration": 53409,
+          "tags": [
+            { "key": "error", "type": "bool", "value": true },
+            { "key": "http.flavor", "type": "string", "value": "1.1" },
+            { "key": "http.host", "type": "string", "value": "localhost:5001" },
+            { "key": "http.method", "type": "string", "value": "GET" },
+            { "key": "http.route", "type": "string", "value": "/employees" },
+            { "key": "http.scheme", "type": "string", "value": "http" },
+            { "key": "http.server_name", "type": "string", "value": "0.0.0.0" },
+            { "key": "http.status_code", "type": "int64", "value": 500 },
+            { "key": "http.target", "type": "string", "value": "/employees" },
+            {
+              "key": "http.user_agent",
+              "type": "string",
+              "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+            },
+            {
+              "key": "internal.span.format",
+              "type": "string",
+              "value": "otlp"
+            },
+            { "key": "net.host.port", "type": "int64", "value": 5000 },
+            {
+              "key": "net.peer.ip",
+              "type": "string",
+              "value": "192.168.144.1"
+            },
+            { "key": "net.peer.port", "type": "int64", "value": 47294 },
+            { "key": "otel.status_code", "type": "string", "value": "ERROR" },
+            {
+              "key": "otel.status_description",
+              "type": "string",
+              "value": "UndefinedTable: relation \"customers\" does not exist\nLINE 1: SELECT * FROM customers /*controller='get_employees',db_driv...\n                      ^\n"
+            },
+            { "key": "span.kind", "type": "string", "value": "server" }
+          ],
+          "logs": [
+            {
+              "timestamp": 1716794728814279,
+              "fields": [
+                { "key": "event", "type": "string", "value": "exception" },
+                {
+                  "key": "exception.escaped",
+                  "type": "string",
+                  "value": "False"
+                },
+                {
+                  "key": "exception.message",
+                  "type": "string",
+                  "value": "relation \"customers\" does not exist\nLINE 1: SELECT * FROM customers /*controller='get_employees',db_driv...\n                      ^\n"
+                },
+                {
+                  "key": "exception.stacktrace",
+                  "type": "string",
+                  "value": "Traceback (most recent call last):\n  File \"/usr/local/lib/python3.9/site-packages/opentelemetry/trace/__init__.py\", line 570, in use_span\n    yield span\n  File \"/usr/local/lib/python3.9/site-packages/flask/app.py\", line 1473, in wsgi_app\n    response = self.full_dispatch_request()\n  File \"/usr/local/lib/python3.9/site-packages/flask/app.py\", line 882, in full_dispatch_request\n    rv = self.handle_user_exception(e)\n  File \"/usr/local/lib/python3.9/site-packages/flask/app.py\", line 880, in full_dispatch_request\n    rv = self.dispatch_request()\n  File \"/usr/local/lib/python3.9/site-packages/flask/app.py\", line 865, in dispatch_request\n    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]\n  File \"/home/app.py\", line 47, in get_employees\n    cursor.execute(\"SELECT * FROM customers\")\n  File \"/usr/local/lib/python3.9/site-packages/opentelemetry/instrumentation/psycopg2/__init__.py\", line 249, in execute\n    return _cursor_tracer.traced_execution(\n  File \"/usr/local/lib/python3.9/site-packages/opentelemetry/instrumentation/dbapi/__init__.py\", line 460, in traced_execution\n    return query_method(*args, **kwargs)\npsycopg2.errors.UndefinedTable: relation \"customers\" does not exist\nLINE 1: SELECT * FROM customers /*controller='get_employees',db_driv...\n                      ^\n\n"
+                },
+                {
+                  "key": "exception.type",
+                  "type": "string",
+                  "value": "UndefinedTable"
+                }
+              ]
+            }
+          ],
+          "processID": "p2",
+          "warnings": [],
+          "process": {
+            "serviceName": "szenario1",
+            "tags": [
+              {
+                "key": "otel.library.name",
+                "type": "string",
+                "value": "opentelemetry.instrumentation.flask"
+              },
+              {
+                "key": "otel.library.version",
+                "type": "string",
+                "value": "0.45b0"
+              },
+              {
+                "key": "telemetry.sdk.language",
+                "type": "string",
+                "value": "python"
+              },
+              {
+                "key": "telemetry.sdk.name",
+                "type": "string",
+                "value": "opentelemetry"
+              },
+              {
+                "key": "telemetry.sdk.version",
+                "type": "string",
+                "value": "1.24.0"
+              }
+            ]
+          },
+          "relativeStartTime": 0,
+          "depth": 0,
+          "hasChildren": true,
+          "childSpanIds": ["34bc2bae63d2ca1e"]
+        }
+      ],
+      "processes": {
+        "p1": {
+          "serviceName": "szenario1",
+          "tags": [
+            {
+              "key": "otel.library.name",
+              "type": "string",
+              "value": "opentelemetry.instrumentation.psycopg2"
+            },
+            {
+              "key": "otel.library.version",
+              "type": "string",
+              "value": "0.45b0"
+            },
+            {
+              "key": "telemetry.sdk.language",
+              "type": "string",
+              "value": "python"
+            },
+            {
+              "key": "telemetry.sdk.name",
+              "type": "string",
+              "value": "opentelemetry"
+            },
+            {
+              "key": "telemetry.sdk.version",
+              "type": "string",
+              "value": "1.24.0"
+            }
+          ]
+        },
+        "p2": {
+          "serviceName": "szenario1",
+          "tags": [
+            {
+              "key": "otel.library.name",
+              "type": "string",
+              "value": "opentelemetry.instrumentation.flask"
+            },
+            {
+              "key": "otel.library.version",
+              "type": "string",
+              "value": "0.45b0"
+            },
+            {
+              "key": "telemetry.sdk.language",
+              "type": "string",
+              "value": "python"
+            },
+            {
+              "key": "telemetry.sdk.name",
+              "type": "string",
+              "value": "opentelemetry"
+            },
+            {
+              "key": "telemetry.sdk.version",
+              "type": "string",
+              "value": "1.24.0"
+            }
+          ]
+        }
+      },
+      "warnings": null
+    },
+    {
+      "traceID": "49ffd2b91869fe9067d4425a378581c6",
+      "spans": [
+        {
+          "traceID": "49ffd2b91869fe9067d4425a378581c6",
+          "spanID": "0c157f54c708ca44",
+          "operationName": "INSERT",
+          "references": [
+            {
+              "refType": "CHILD_OF",
+              "traceID": "49ffd2b91869fe9067d4425a378581c6",
+              "spanID": "ce46a1e08300c29e",
+              "span": {
+                "traceID": "49ffd2b91869fe9067d4425a378581c6",
+                "spanID": "ce46a1e08300c29e",
+                "operationName": "/employees/insert",
+                "references": [],
+                "startTime": 1716794738742411,
+                "duration": 46845,
+                "tags": [
+                  { "key": "http.flavor", "type": "string", "value": "1.1" },
+                  {
+                    "key": "http.host",
+                    "type": "string",
+                    "value": "localhost:5001"
+                  },
+                  { "key": "http.method", "type": "string", "value": "POST" },
+                  {
+                    "key": "http.route",
+                    "type": "string",
+                    "value": "/employees/insert"
+                  },
+                  { "key": "http.scheme", "type": "string", "value": "http" },
+                  {
+                    "key": "http.server_name",
+                    "type": "string",
+                    "value": "0.0.0.0"
+                  },
+                  { "key": "http.status_code", "type": "int64", "value": 200 },
+                  {
+                    "key": "http.target",
+                    "type": "string",
+                    "value": "/employees/insert"
+                  },
+                  {
+                    "key": "http.user_agent",
+                    "type": "string",
+                    "value": "PostmanRuntime/7.37.3"
+                  },
+                  {
+                    "key": "internal.span.format",
+                    "type": "string",
+                    "value": "otlp"
+                  },
+                  { "key": "net.host.port", "type": "int64", "value": 5000 },
+                  {
+                    "key": "net.peer.ip",
+                    "type": "string",
+                    "value": "192.168.144.1"
+                  },
+                  { "key": "net.peer.port", "type": "int64", "value": 42150 },
+                  { "key": "span.kind", "type": "string", "value": "server" }
+                ],
+                "logs": [],
+                "processID": "p2",
+                "warnings": [],
+                "process": {
+                  "serviceName": "szenario1",
+                  "tags": [
+                    {
+                      "key": "otel.library.name",
+                      "type": "string",
+                      "value": "opentelemetry.instrumentation.flask"
+                    },
+                    {
+                      "key": "otel.library.version",
+                      "type": "string",
+                      "value": "0.45b0"
+                    },
+                    {
+                      "key": "telemetry.sdk.language",
+                      "type": "string",
+                      "value": "python"
+                    },
+                    {
+                      "key": "telemetry.sdk.name",
+                      "type": "string",
+                      "value": "opentelemetry"
+                    },
+                    {
+                      "key": "telemetry.sdk.version",
+                      "type": "string",
+                      "value": "1.24.0"
+                    }
+                  ]
+                },
+                "relativeStartTime": 0,
+                "depth": 0,
+                "hasChildren": true,
+                "childSpanIds": ["0c157f54c708ca44"]
+              }
+            }
+          ],
+          "startTime": 1716794738770863,
+          "duration": 2529,
+          "tags": [
+            { "key": "db.name", "type": "string", "value": "szenariodb" },
+            {
+              "key": "db.statement",
+              "type": "string",
+              "value": "INSERT INTO employees (name, position, start_date) VALUES (%s, %s, %s)"
+            },
+            { "key": "db.system", "type": "string", "value": "postgresql" },
+            { "key": "db.user", "type": "string", "value": "postgres" },
+            {
+              "key": "internal.span.format",
+              "type": "string",
+              "value": "otlp"
+            },
+            {
+              "key": "net.peer.name",
+              "type": "string",
+              "value": "szenario_db"
+            },
+            { "key": "net.peer.port", "type": "int64", "value": 5432 },
+            { "key": "span.kind", "type": "string", "value": "client" }
+          ],
+          "logs": [],
+          "processID": "p1",
+          "warnings": [],
+          "process": {
+            "serviceName": "szenario1",
+            "tags": [
+              {
+                "key": "otel.library.name",
+                "type": "string",
+                "value": "opentelemetry.instrumentation.psycopg2"
+              },
+              {
+                "key": "otel.library.version",
+                "type": "string",
+                "value": "0.45b0"
+              },
+              {
+                "key": "telemetry.sdk.language",
+                "type": "string",
+                "value": "python"
+              },
+              {
+                "key": "telemetry.sdk.name",
+                "type": "string",
+                "value": "opentelemetry"
+              },
+              {
+                "key": "telemetry.sdk.version",
+                "type": "string",
+                "value": "1.24.0"
+              }
+            ]
+          },
+          "relativeStartTime": 28452,
+          "depth": 1,
+          "hasChildren": false,
+          "childSpanIds": []
+        },
+        {
+          "traceID": "49ffd2b91869fe9067d4425a378581c6",
+          "spanID": "ce46a1e08300c29e",
+          "operationName": "/employees/insert",
+          "references": [],
+          "startTime": 1716794738742411,
+          "duration": 46845,
+          "tags": [
+            { "key": "http.flavor", "type": "string", "value": "1.1" },
+            { "key": "http.host", "type": "string", "value": "localhost:5001" },
+            { "key": "http.method", "type": "string", "value": "POST" },
+            {
+              "key": "http.route",
+              "type": "string",
+              "value": "/employees/insert"
+            },
+            { "key": "http.scheme", "type": "string", "value": "http" },
+            { "key": "http.server_name", "type": "string", "value": "0.0.0.0" },
+            { "key": "http.status_code", "type": "int64", "value": 200 },
+            {
+              "key": "http.target",
+              "type": "string",
+              "value": "/employees/insert"
+            },
+            {
+              "key": "http.user_agent",
+              "type": "string",
+              "value": "PostmanRuntime/7.37.3"
+            },
+            {
+              "key": "internal.span.format",
+              "type": "string",
+              "value": "otlp"
+            },
+            { "key": "net.host.port", "type": "int64", "value": 5000 },
+            {
+              "key": "net.peer.ip",
+              "type": "string",
+              "value": "192.168.144.1"
+            },
+            { "key": "net.peer.port", "type": "int64", "value": 42150 },
+            { "key": "span.kind", "type": "string", "value": "server" }
+          ],
+          "logs": [],
+          "processID": "p2",
+          "warnings": [],
+          "process": {
+            "serviceName": "szenario1",
+            "tags": [
+              {
+                "key": "otel.library.name",
+                "type": "string",
+                "value": "opentelemetry.instrumentation.flask"
+              },
+              {
+                "key": "otel.library.version",
+                "type": "string",
+                "value": "0.45b0"
+              },
+              {
+                "key": "telemetry.sdk.language",
+                "type": "string",
+                "value": "python"
+              },
+              {
+                "key": "telemetry.sdk.name",
+                "type": "string",
+                "value": "opentelemetry"
+              },
+              {
+                "key": "telemetry.sdk.version",
+                "type": "string",
+                "value": "1.24.0"
+              }
+            ]
+          },
+          "relativeStartTime": 0,
+          "depth": 0,
+          "hasChildren": true,
+          "childSpanIds": ["0c157f54c708ca44"]
+        }
+      ],
+      "processes": {
+        "p1": {
+          "serviceName": "szenario1",
+          "tags": [
+            {
+              "key": "otel.library.name",
+              "type": "string",
+              "value": "opentelemetry.instrumentation.psycopg2"
+            },
+            {
+              "key": "otel.library.version",
+              "type": "string",
+              "value": "0.45b0"
+            },
+            {
+              "key": "telemetry.sdk.language",
+              "type": "string",
+              "value": "python"
+            },
+            {
+              "key": "telemetry.sdk.name",
+              "type": "string",
+              "value": "opentelemetry"
+            },
+            {
+              "key": "telemetry.sdk.version",
+              "type": "string",
+              "value": "1.24.0"
+            }
+          ]
+        },
+        "p2": {
+          "serviceName": "szenario1",
+          "tags": [
+            {
+              "key": "otel.library.name",
+              "type": "string",
+              "value": "opentelemetry.instrumentation.flask"
+            },
+            {
+              "key": "otel.library.version",
+              "type": "string",
+              "value": "0.45b0"
+            },
+            {
+              "key": "telemetry.sdk.language",
+              "type": "string",
+              "value": "python"
+            },
+            {
+              "key": "telemetry.sdk.name",
+              "type": "string",
+              "value": "opentelemetry"
+            },
+            {
+              "key": "telemetry.sdk.version",
+              "type": "string",
+              "value": "1.24.0"
+            }
+          ]
+        }
+      },
+      "warnings": null
+    }
+  ]
+}

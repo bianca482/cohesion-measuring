@@ -1,0 +1,80 @@
+services:
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    ports:
+      - "16686:16686"
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+      - LOG_LEVEL=debug
+    volumes:
+      - jaeger_data:/data
+
+  setup:
+    build: ./setup
+    ports:
+      - "5000:5000"
+    environment:
+      - OTEL_SERVICE_NAME=setup
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://jaeger:4318
+
+  szenario1:
+    build: ./szenario1
+    ports:
+      - "5001:5000"
+    environment:
+      - OTEL_SERVICE_NAME=szenario1
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://jaeger:4318
+
+  szenario2:
+    build: ./szenario2
+    ports:
+      - "5002:5000"
+    environment:
+      - OTEL_SERVICE_NAME=szenario2
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://jaeger:4318
+
+  szenario3:
+    build: ./szenario3
+    ports:
+      - "5003:5000"
+    environment:
+      - OTEL_SERVICE_NAME=szenario3
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://jaeger:4318
+
+  szenario_db:
+    image: "postgres:alpine"
+    command: postgres -c 'max_connections=200'
+    restart: always
+    environment:
+      POSTGRES_DB: szenariodb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      PGDATA: /var/lib/postgresql/data
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=postgres@example.com
+      - PGADMIN_DEFAULT_PASSWORD=postgres
+      - PGADMIN_CONFIG_SERVER_MODE=False
+      - PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED=False
+      - PGADMIN_DISABLE_POSTFIX=True
+    entrypoint: /bin/sh -c "chmod 600 /pgadmin4/servers.pgpass; /entrypoint.sh;"
+    user: root
+    ports:
+      - "5050:80"
+    restart: always
+    configs:
+      - source: servers.json
+        target: /pgadmin4/servers.json
+      - source: servers.pgpass
+        target: /pgadmin4/servers.pgpass
+
+volumes:
+  jaeger_data:
+
+configs:
+  servers.json:
+    file: ./servers.json
+  servers.pgpass:
+    content: "*:*:*:postgres:postgres"
