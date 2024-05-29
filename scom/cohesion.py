@@ -4,21 +4,23 @@ def group_logs(logs):
     grouped_logs= {}
 
     for log in logs:
-        operationName = log.get_operation_name()
+        operation_name = log.get_operation_name()
 
-        if operationName == None:
+        if operation_name == None:
             continue
 
-        if operationName not in grouped_logs:
-            grouped_logs[operationName] = []
+        if operation_name not in grouped_logs:
+            grouped_logs[operation_name] = []
 
-        table_name = log.get_table_names()
+        table_names = log.get_table_names()
 
-        if table_name in grouped_logs[operationName]: 
-            continue
-        
-        for name in log.get_table_names():
-            grouped_logs[operationName].append(name)
+        for name in table_names: 
+            if name in grouped_logs[operation_name]:
+                continue
+            else: 
+                grouped_logs[operation_name].append(name)
+
+    return grouped_logs
 
 
 def extract_logs(jsonfile):
@@ -37,30 +39,30 @@ def extract_logs(jsonfile):
     return logs
 
 
-def calculateConnectionIntensity(api1, api2):
-     common_attributes = set(api1).intersection(api2)
-     if len(common_attributes) == 0: return 0
+def calculate_connection_intensity(api1, api2):
+     common_tables = set(api1).intersection(api2)
+     if len(common_tables) == 0: return 0
 
-     return len(common_attributes) / (min(len(set(api1)), len(set(api2))))
+     return len(common_tables) / (min(len(set(api1)), len(set(api2))))
 
 
-def scom(apis, number_of_tables):
-    n_of_apis = len(apis)
+def scom(grouped_logs, number_of_tables):
+    n_of_apis = len(grouped_logs)
     if n_of_apis <= 1: return "Too few endpoints"
 
     total_weighted_connections = 0
 
     processed_pairs = set()  # Verarbeitete Paare speichern
 
-    for i, api1 in enumerate(apis):
-        for api2 in list(apis.keys())[i + 1:]:
+    for i, api1 in enumerate(grouped_logs):
+        for api2 in list(grouped_logs.keys())[i + 1:]:
             pair_key = tuple(sorted((api1, api2)))
             
             if pair_key in processed_pairs:
                 continue  # Überspringen, wenn Paar schon verarbeitet wurde
             
-            connection_intensity = calculateConnectionIntensity(apis[api1], apis[api2])
-            n_involved_tables = len(set(apis[api1]).union(set(apis[api2])))
+            connection_intensity = calculate_connection_intensity(grouped_logs[api1], grouped_logs[api2])
+            n_involved_tables = len(set(grouped_logs[api1]).union(set(grouped_logs[api2])))
             weight = n_involved_tables / number_of_tables
             weighted_connection = connection_intensity * weight
             total_weighted_connections += weighted_connection

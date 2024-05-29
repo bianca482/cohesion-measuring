@@ -47,7 +47,7 @@ class Log:
         
         return None
     
-    def get_db_statement(self):
+    def get_db_statements(self):
         result = []
         for s in self.tags:
             if s["key"] == "db.statement":
@@ -59,6 +59,8 @@ class Log:
         return None
     
     def get_table_names(self):
-        statement = self.get_db_statement()
+        statement = self.get_db_statements()
         if statement is not None:
             return extract_table_names(statement[0])
+        
+        return None
