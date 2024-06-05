@@ -1,4 +1,4 @@
-from scom.log import Log
+from cohesion_calculator.log import Log
 
 def group_logs(logs):
     grouped_logs= {}
@@ -24,9 +24,10 @@ def group_logs(logs):
     return grouped_logs
 
 
-def extract_logs(jsonfile):
+def extract_logs(result):
     logs = []
-    for data in jsonfile["data"]:
+
+    for data in result["data"]:
         for log in data["spans"]:
             span_id = log['spanID']
             tags = log['tags']
@@ -34,7 +35,7 @@ def extract_logs(jsonfile):
                 if "span" in reference: 
                     span_obj = Log(span_id=span_id, reference_tags=reference["span"]["tags"], tags=tags)
                     logs.append(span_obj)
-                    
+          
     return logs
 
 
@@ -72,10 +73,10 @@ def scom(apis):
 
     return total_weighted_connections / (n_of_apis*(n_of_apis-1) / 2)
 
-def calculate_scom(jsonfile, n_tables):
+def calculate_scom(jsonfile):
     logs = extract_logs(jsonfile)
     grouped_logs = group_logs(logs)
-    return scom(grouped_logs, n_tables)
+    return scom(grouped_logs)
 
 
 

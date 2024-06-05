@@ -1,1 +1,6 @@
+/scom/__pycache__
+/scom/.pytest_cache
+/scom/build
+/scom/dist
+/scom/*.egg-info
 test_data/teastore/*.json

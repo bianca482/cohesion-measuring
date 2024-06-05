@@ -1,6 +1,6 @@
 import json
-from scom.cohesion import calculate_connection_intensity, extract_logs, group_logs, scom
-from scom.log import Log, extract_table_names
+from cohesion_calculator.cohesion import calculate_connection_intensity, extract_logs, group_logs, scom, calculate_scom
+from cohesion_calculator.log import Log, extract_table_names
 
 def test_extract_tables():
     sql_statements = [
@@ -172,6 +172,14 @@ def test_scom_middle():
     }
 
     assert scom(grouped_logs) == 0.5
+
+def test_all():
+    file = open("../test_data/scenario2.json")
+    result = json.load(file)
+    file.close()
+
+    scom = calculate_scom(result)
+    assert scom == 1
 
 
 

@@ -1,8 +1,6 @@
 import json
 import re
 
-import re
-
 table_name_pattern = re.compile(
     r"""
     (?i)   # Case-insensitive matching
