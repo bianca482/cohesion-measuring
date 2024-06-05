@@ -3,6 +3,7 @@
 Create a text file named requirements.txt with following content:
 
 {
+build
 setuptools
 wheel
 twine
@@ -14,7 +15,7 @@ pytest-runner
 
 ### Build library
 
-`python setup.py bdist_wheel`
+`python -m build --wheel`
 
 ### Run tests (optional)
 
