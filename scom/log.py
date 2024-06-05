@@ -1,6 +1,8 @@
 import json
 import re
 
+import re
+
 table_name_pattern = re.compile(
     r"""
     (?i)   # Case-insensitive matching
@@ -8,46 +10,45 @@ table_name_pattern = re.compile(
     \bJOIN\s+([`'"]?[a-zA-Z_][\w$]*[`'"]?)|   
     \bINTO\s+([`'"]?[a-zA-Z_][\w$]*[`'"]?)|  
     \bUPDATE\s+([`'"]?[a-zA-Z_][\w$]*[`'"]?)| 
-    \bDELETE\s+FROM\s+([`'"]?[a-zA-Z_][\w$]*[`'"]?)| 
-    \bCREATE\s+TABLE\s+([`'"]?[a-zA-Z_][\w$]*[`'"]?)|
-    \bDROP\s+TABLE\s+([`'"]?[a-zA-Z_][\w$]*[`'"]?)    
+    \bDELETE\s+FROM\s+([`'"]?[a-zA-Z_][\w$]*[`'"]?)  
     """,
     re.VERBOSE
 )
 
 def extract_table_names(sql):
     matches = table_name_pattern.findall(sql)
+    #matches = [
+    #('employees', '', '', '', '', '', ''),
+    #('', 'customers', '', '', '', '', '')]
     # filters out empty matches ('') and flattens result to normal list
     return [match for sublist in matches for match in sublist if match]
-
 class Log:
-    def __init__(self, span_id, spans, tags):
+    def __init__(self, span_id, reference_tags, tags):
         self.span_id = span_id
-        self.spans = spans
+        self.reference_tags = reference_tags
         self.tags = tags
 
     def __repr__(self):
-        return f"Log(span_id={self.span_id}, spans={self.spans}, tags={self.tags})"
+        return f"Log(span_id={self.span_id}, reference_tags={self.reference_tags}, tags={self.tags})"
 
     def to_json(self):
         return json.dumps({
             'spanId': self.span_id,
-            'spans': self.spans,
+            'reference_tags': self.reference_tags,
             'tags': self.tags
         }, indent=2)
     
-    def get_operation_name(self):
-        result = []
-        for s in self.spans:
-            result.append(s["operationName"])
+    def get_endpoint_name(self):
+        result = None
 
-        if len(result) > 0:
-            input = result[0].split("/")
-            return input[1]
+        for tag in self.reference_tags:
+            if tag["key"] == "http.target":     
+                result = tag["value"]
+                break
         
-        return None
+        return result
     
-    def get_db_statements(self):
+    def get_db_statement(self):
         result = []
         for s in self.tags:
             if s["key"] == "db.statement":
@@ -59,7 +60,8 @@ class Log:
         return None
     
     def get_table_names(self):
-        statement = self.get_db_statements()
+        statement = self.get_db_statement()
+        
         if statement is not None:
             return extract_table_names(statement[0])
         
