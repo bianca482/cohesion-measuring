@@ -20,6 +20,14 @@ def extract_table_names(sql):
     #('', 'customers', '', '', '', '', '')]
     # filters out empty matches ('') and flattens result to normal list
     return [match for sublist in matches for match in sublist if match]
+
+def is_number(value):
+   try:
+        float(value)
+        return True
+   except ValueError:
+        return False
+
 class Log:
     def __init__(self, span_id, reference_tags, tags):
         self.span_id = span_id
@@ -42,12 +50,22 @@ class Log:
         for tag in self.reference_tags:
             if tag["key"] == "http.target":     
                 result = tag["value"]
+                endpoint = result.split('?')[0]
+                endpoint_parts = endpoint.split('/')
+
+                # if the last part is a number (e.g. /customers/count/9), it should get cut - else (e.g. /customers) 
+                if is_number(endpoint_parts[-1]):
+                    result = '/'.join(endpoint_parts[:-1]) + '/'
+                else: 
+                    result = '/'.join(endpoint_parts) + '/'
                 break
         
         return result
     
+
     def get_db_statement(self):
         result = []
+        
         for s in self.tags:
             if s["key"] == "db.statement":
                 result.append(s["value"])

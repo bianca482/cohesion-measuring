@@ -66,8 +66,8 @@ log2 = Log("2", reference_tags2, tags2)
 empty_log = Log("3", [], [])
 
 def test_get_endpoint_name():
-    assert log.get_endpoint_name() == "/products"
-    assert log2.get_endpoint_name() == "/employees"
+    assert log.get_endpoint_name() == "/products/"
+    assert log2.get_endpoint_name() == "/employees/"
     assert empty_log.get_endpoint_name() == None
 
 def test_get_db_statement(): 
@@ -88,12 +88,12 @@ def test_extract_logs_with_nested_url():
     logs = extract_logs(result)
 
     assert logs[0].span_id == "8d3dc819cbc44469"
-    assert logs[0].get_endpoint_name() == "/orders"
+    assert logs[0].get_endpoint_name() == "/orders/"
     assert logs[0].get_db_statement() == ['SELECT * FROM products']
     assert logs[0].get_table_names() == ["products"]
 
     assert logs[1].span_id == "e519b5b19e3394ab"
-    assert logs[1].get_endpoint_name() == "/orders"
+    assert logs[1].get_endpoint_name() == "/orders/"
     assert logs[1].get_db_statement() == ['SELECT * FROM orders']
     assert logs[1].get_table_names() == ["orders"]
 
@@ -102,8 +102,8 @@ def test_group_logs():
     grouped_logs = group_logs(logs)
 
     assert grouped_logs == {
-        "/products": ["products"],
-        "/employees": ["employees", "customers"]
+        "/products/": ["products"],
+        "/employees/": ["employees", "customers"]
     }
 
 def test_group_logs_duplicate_values():
@@ -111,64 +111,64 @@ def test_group_logs_duplicate_values():
     grouped_logs = group_logs(logs)
 
     assert grouped_logs == {
-        "/products": ["products"],
-        "/employees": ["employees", "customers"]
+        "/products/": ["products"],
+        "/employees/": ["employees", "customers"]
     }
 
 def test_calculate_connection_intensity_worst(): 
     grouped_logs = {
-        "/orders": ["products"],
-        "/customers": ["customers"]
+        "/orders/": ["products"],
+        "/customers/": ["customers"]
     }
 
-    connection_intensity = calculate_connection_intensity(grouped_logs["/orders"], grouped_logs["/customers"])
+    connection_intensity = calculate_connection_intensity(grouped_logs["/orders/"], grouped_logs["/customers/"])
     assert connection_intensity == 0
     
 def test_calculate_connection_intensity_best(): 
     grouped_logs = {
-        "/orders": ["products", "customers"],
-        "/customers": ["customers", "products"]
+        "/orders/": ["products", "customers"],
+        "/customers/": ["customers", "products"]
     }
 
-    connection_intensity = calculate_connection_intensity(grouped_logs["/orders"], grouped_logs["/customers"])
+    connection_intensity = calculate_connection_intensity(grouped_logs["/orders/"], grouped_logs["/customers/"])
     assert connection_intensity == 1
 
 def test_calculate_connection_intensity_middle(): 
     grouped_logs = {
-        "/orders": ["products", "employees"],
-        "/customers": ["customers", "products"]
+        "/orders/": ["products", "employees"],
+        "/customers/": ["customers", "products"]
     }
 
-    connection_intensity = calculate_connection_intensity(grouped_logs["/orders"], grouped_logs["/customers"])
+    connection_intensity = calculate_connection_intensity(grouped_logs["/orders/"], grouped_logs["/customers/"])
     assert connection_intensity == 0.5
     
 def test_scom_too_few_endpoints(): 
     grouped_logs = {
-        "/orders": ["products", "employees"]
+        "/orders/": ["products", "employees"]
     }
 
     assert scom(grouped_logs) == "Too few endpoints"
         
 def test_scom_best(): 
     grouped_logs = {
-        "/orders": ["products", "customers"],
-        "/customers": ["customers", "products"]
+        "/orders/": ["products", "customers"],
+        "/customers/": ["customers", "products"]
     }
 
     assert scom(grouped_logs) == 1
 
 def test_scom_worst(): 
     grouped_logs = {
-        "/orders": ["products"],
-        "/customers": ["customers"]
+        "/orders/": ["products"],
+        "/customers/": ["customers"]
     }
 
     assert scom(grouped_logs) == 0
 
 def test_scom_middle(): 
     grouped_logs = {
-        "/orders": ["products", "employees"],
-        "/customers": ["customers", "products"]
+        "/orders/": ["products", "employees"],
+        "/customers/": ["customers", "products"]
     }
 
     assert scom(grouped_logs) == 0.5

@@ -76,6 +76,7 @@ def scom(apis):
 def calculate_scom(jsonfile):
     logs = extract_logs(jsonfile)
     grouped_logs = group_logs(logs)
+    print(grouped_logs)
     return scom(grouped_logs)
 
 
