@@ -1,4 +1,9 @@
 from cohesion_calculator.log import Log
+from collections import Counter
+
+def filter_empty_apis(apis):
+    return {k: v for k, v in apis.items() if v}
+
 
 def group_logs(logs):
     grouped_logs= {}
@@ -46,13 +51,15 @@ def calculate_connection_intensity(api1, api2):
      return len(common_tables) / (min(len(set(api1)), len(set(api2))))
 
 
-def scom(apis):
+def scom(grouped_logs):
+    apis = filter_empty_apis(grouped_logs)
+
     n_of_apis = len(apis)
-    if n_of_apis <= 1: return "Too few endpoints"
+    if n_of_apis <= 1:
+        return "Too few endpoints"
 
-    total_weighted_connections = 0
-
-    processed_pairs = set()  # Verarbeitete Paare speichern
+    total_weighted_connections = 0 
+    processed_pairs = set() # Verarbeitete Paare speichern
 
     for i, api1 in enumerate(apis):
         for api2 in list(apis.keys())[i + 1:]:
@@ -60,14 +67,11 @@ def scom(apis):
             
             if pair_key in processed_pairs:
                 continue  # Überspringen, wenn Paar schon verarbeitet wurde
-            
-            connection_intensity = calculate_connection_intensity(apis[api1], apis[api2])
-            # Weglassen, da Tabellen, die nur sehr selten aufgerufen werden, nicht berücksichtigt werden sollen
-            #n_involved_tables = len(set(apis[api1]).union(set(apis[api2])))
-            #weight = n_involved_tables / number_of_tables
-            #weighted_connection = connection_intensity * weight
-            #weighted_connection = connection_intensity * n_involved_tables
-            #total_weighted_connections += weighted_connection
+
+            tables_api1 = Counter(apis[api1]).keys()
+            tables_api2 = Counter(apis[api2]).keys()
+
+            connection_intensity = calculate_connection_intensity(tables_api1, tables_api2)
             total_weighted_connections += connection_intensity
             processed_pairs.add(pair_key)  # Paar als verarbeitet markieren
 

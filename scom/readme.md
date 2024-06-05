@@ -1,3 +1,9 @@
+# Cohesion Calculator
+
+Calculates SCOM metric
+
+## Setup
+
 ### Install dependencies
 
 Create a text file named requirements.txt with following content:
@@ -33,7 +39,7 @@ The library can be imported like `import cohesion_scom`
 
 For later:
 
-## Publish to PyPI
+### Publish to PyPI
 
 `twine upload dist/\*`
 `pip install cohesion_scom`

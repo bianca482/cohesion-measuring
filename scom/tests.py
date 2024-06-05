@@ -1,5 +1,5 @@
 import json
-from cohesion_calculator.cohesion import calculate_connection_intensity, extract_logs, group_logs, scom, calculate_scom
+from cohesion_calculator.cohesion import calculate_connection_intensity, extract_logs, group_logs, scom, calculate_scom, filter_empty_apis
 from cohesion_calculator.log import Log, extract_table_names
 
 def test_extract_tables():
@@ -180,6 +180,13 @@ def test_all():
 
     scom = calculate_scom(result)
     assert scom == 1
+
+def test_filter_empty_apis():
+    input = {'/employees/': ['employees'], 'customers/': ['customers'], 'customers/test/': []}
+    result = filter_empty_apis(input)
+
+    assert result == {'/employees/': ['employees'], 'customers/': ['customers']}
+
 
 
 
