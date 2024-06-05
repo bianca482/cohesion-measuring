@@ -3,4 +3,5 @@
 /scom/build
 /scom/dist
 /scom/*.egg-info
+/scom/cohesion_calculator/__pycache__
 test_data/teastore/*.json
