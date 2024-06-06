@@ -1,6 +1,6 @@
 import json
-from cohesion_calculator.cohesion import calculate_connection_intensity, extract_logs, group_logs, scom, calculate_scom, filter_empty_apis
-from cohesion_calculator.log import Log, extract_table_names
+from cohesion_calculator.cohesion import calculate_connection_intensity, scom, calculate_scom, filter_empty_apis
+from cohesion_calculator.log import Log, extract_table_names, extract_logs, group_logs, retrieve_grouped_logs_from_file
 
 def test_extract_tables():
     sql_statements = [
@@ -173,7 +173,7 @@ def test_scom_middle():
 
     assert scom(grouped_logs) == 0.5
 
-def test_all():
+def test_calculate_scom():
     file = open("../test_data/scenario2.json")
     result = json.load(file)
     file.close()
@@ -186,6 +186,18 @@ def test_filter_empty_apis():
     result = filter_empty_apis(input)
 
     assert result == {'/employees/': ['employees'], 'customers/': ['customers']}
+
+def test_retrieve_grouped_logs(): 
+    file = open("../test_data/scenario1.json")
+    data = json.load(file)
+    file.close()
+
+    result = retrieve_grouped_logs_from_file(data)
+
+    assert result == {
+        '/employees/': ['customers', 'employees'],
+        '/orders/': ['products', 'orders']
+    }
 
 
 

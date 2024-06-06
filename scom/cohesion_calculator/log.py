@@ -82,3 +82,46 @@ class Log:
             return extract_table_names(statement[0])
         
         return None
+    
+
+def group_logs(logs):
+    grouped_logs= {}
+
+    for log in logs:
+        endpoint_name = log.get_endpoint_name()
+
+        if endpoint_name == None:
+            continue
+
+        if endpoint_name not in grouped_logs:
+            grouped_logs[endpoint_name] = []
+
+        table_names = log.get_table_names()
+
+        if table_names is not None:
+            for name in table_names: 
+                if name in grouped_logs[endpoint_name]:
+                    continue
+                else: 
+                    grouped_logs[endpoint_name].append(name)
+
+    return grouped_logs
+
+
+def extract_logs(result):
+    logs = []
+
+    for data in result["data"]:
+        for log in data["spans"]:
+            span_id = log['spanID']
+            tags = log['tags']
+            for reference in log["references"]:
+                if "span" in reference: 
+                    span_obj = Log(span_id=span_id, reference_tags=reference["span"]["tags"], tags=tags)
+                    logs.append(span_obj)
+          
+    return logs
+
+def retrieve_grouped_logs_from_file(jsonfile):
+    logs = extract_logs(jsonfile)
+    return group_logs(logs)
