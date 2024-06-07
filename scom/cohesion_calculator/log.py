@@ -1,5 +1,6 @@
 import json
 import re
+from collections import Counter
 
 table_name_pattern = re.compile(
     r"""
@@ -100,10 +101,10 @@ def set_parent_endpoints(logs, service_name):
             parent = parents.get(log.trace_id)
             if parent:
                 log.parent_endpoint = parent
-                
+
     return logs
 
-def group_logs(logs):
+def group_logs(logs, remove_duplicates = True):
     grouped_logs = {}
 
     for log in logs: 
@@ -115,11 +116,12 @@ def group_logs(logs):
                 grouped_logs[endpoint_name] = []
 
             for name in table_names:
-                if name in grouped_logs[endpoint_name]:
-                    continue
-                else:
-                    grouped_logs[endpoint_name].append(name)
-
+                if remove_duplicates:
+                    if name in grouped_logs[endpoint_name]:
+                        continue
+                    else:
+                        grouped_logs[endpoint_name].append(name)
+                else: grouped_logs[endpoint_name].append(name)
 
     return grouped_logs
 
@@ -172,6 +174,22 @@ def extract_logs(result, service_name):
 
     return logs
 
-def retrieve_grouped_logs_from_file(jsonfile, service_name):
+def get_number_of_calls(logs):
+    grouped_logs = group_logs(logs, False)
+    calls = {}
+
+    for url, tables in grouped_logs.items():
+        counter = Counter(tables)
+        calls[url] = dict(counter)
+
+    return calls
+
+def get_grouped_logs_from_file(jsonfile, service_name):
     logs = extract_logs(jsonfile, service_name)
+
     return group_logs(logs)
+
+def get_number_of_calls_from_file(jsonfile, service_name):
+    logs = extract_logs(jsonfile, service_name)
+
+    return get_number_of_calls(logs)

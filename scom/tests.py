@@ -1,7 +1,7 @@
 import json
 from cohesion_calculator.cohesion import calculate_connection_intensity, scom, calculate_scom, filter_empty_apis
-from cohesion_calculator.log import Log, extract_table_names, extract_logs, group_logs, retrieve_grouped_logs_from_file, set_parent_endpoints
-"""
+from cohesion_calculator.log import Log, extract_table_names, extract_logs, group_logs, get_grouped_logs_from_file, set_parent_endpoints, get_number_of_calls, get_number_of_calls_from_file
+
 def test_extract_tables():
     sql_statements = [
         "SELECT name, email FROM employees;",
@@ -153,12 +153,12 @@ def test_retrieve_grouped_logs():
     data = json.load(file)
     file.close()
 
-    result = retrieve_grouped_logs_from_file(data, "scenario1")
+    result = get_grouped_logs_from_file(data, "scenario1")
 
     assert result == {
         'scenario1/employees/': ['customers', 'employees'],
         'scenario1/orders/': ['orders', 'products']
-    }"""
+    }
 
 
 def test_set_parent_endpoints(): 
@@ -182,6 +182,28 @@ def test_set_parent_endpoints():
     assert log3.parent_endpoint == "service1/test/"
     assert log4.parent_endpoint == "service1/test/"
     assert log5.parent_endpoint == "service1/products/"
+
+
+def test_get_number_of_calls():
+    logs = [log, log2, empty_log]
+
+    result = get_number_of_calls(logs)
+
+    assert result == {'service1/products/': {'customers': 1, 'employees': 1, 'products': 1}}
+
+
+def test_get_number_of_calls_from_file(): 
+    file = open("../test_scenarios/test_data/scenario1.json")
+    data = json.load(file)
+    file.close()
+
+    result = get_number_of_calls_from_file(data, "scenario1")
+
+    assert result == {
+        'scenario1/orders/': {'orders': 1, 'products': 1},
+        'scenario1/employees/': {'employees': 2, 'customers': 2}
+    }
+
 
 
 
