@@ -35,8 +35,7 @@ class Log:
         self.parent_id = parent_id
         self.db_statements = db_statements
         self.http_target = http_target
-        self.children = []
-        self.parent_endpoint = ""
+        self.parent_endpoint = None
 
     def __repr__(self):
         return f"Log(span_id={self.span_id}, trace_id={self.trace_id}, parent_id={self.parent_id}, db_statements={self.db_statements}, http_target={self.http_target})"
@@ -84,16 +83,25 @@ class Log:
         
         return None
 
+def set_parent_endpoints(logs, service_name):
+    # Create a dictionary to store parents
+    parents = {}
 
-def set_parent_endpoints(logs, service_name): 
+    # get service parent for each trace id
     for log in logs: 
         endpoint_name = log.get_endpoint_name()
         if endpoint_name != None and service_name in endpoint_name:
-            for l in logs:
-                if l.trace_id == log.trace_id:
-                    l.parent_endpoint = log.get_endpoint_name()
-    return logs
+            if log.trace_id not in parents.keys():
+                parents[log.trace_id] = endpoint_name
 
+    for log in logs:
+        endpoint_name = log.get_endpoint_name()
+        if endpoint_name != None:
+            parent = parents.get(log.trace_id)
+            if parent:
+                log.parent_endpoint = parent
+                
+    return logs
 
 def group_logs(logs):
     grouped_logs = {}

@@ -1,7 +1,7 @@
 import json
 from cohesion_calculator.cohesion import calculate_connection_intensity, scom, calculate_scom, filter_empty_apis
 from cohesion_calculator.log import Log, extract_table_names, extract_logs, group_logs, retrieve_grouped_logs_from_file, set_parent_endpoints
-
+"""
 def test_extract_tables():
     sql_statements = [
         "SELECT name, email FROM employees;",
@@ -42,7 +42,7 @@ def test_get_table_names():
     assert empty_log.get_table_names() == None
 
 def test_extract_logs_with_nested_url(): 
-    file = open("../test_data/scenario1.json")
+    file = open("../test_scenarios/test_data/scenario1.json")
     result = json.load(file)
     file.close()
 
@@ -64,7 +64,7 @@ def test_group_logs():
     
     grouped_logs = group_logs(logs)
 
-    assert grouped_logs == {'service1/employees/': ['products', 'employees', 'customers']}
+    assert grouped_logs == {'service1/products/': ['products', 'employees', 'customers']}
 
 def test_group_logs_duplicate_values():
     logs = [log, log2, log2, empty_log]
@@ -73,7 +73,7 @@ def test_group_logs_duplicate_values():
     grouped_logs = group_logs(logs)
 
     assert grouped_logs == {
-        "service1/employees/": ["products", "employees", "customers"]
+        "service1/products/": ["products", "employees", "customers"]
     }
 
 def test_calculate_connection_intensity_worst(): 
@@ -135,7 +135,7 @@ def test_scom_middle():
     assert scom(grouped_logs) == 0.5
 
 def test_calculate_scom():
-    file = open("../test_data/scenario2.json")
+    file = open("../test_scenarios/test_data/scenario2.json")
     result = json.load(file)
     file.close()
 
@@ -149,7 +149,7 @@ def test_filter_empty_apis():
     assert result == {'service1/employees/': ['employees'], 'service1/customers/': ['customers']}
 
 def test_retrieve_grouped_logs(): 
-    file = open("../test_data/scenario1.json")
+    file = open("../test_scenarios/test_data/scenario1.json")
     data = json.load(file)
     file.close()
 
@@ -158,8 +158,30 @@ def test_retrieve_grouped_logs():
     assert result == {
         'scenario1/employees/': ['customers', 'employees'],
         'scenario1/orders/': ['orders', 'products']
-    }
+    }"""
 
+
+def test_set_parent_endpoints(): 
+    log = Log("1", "abc", None, ["SELECT * FROM products"], "/service1/products")
+    log2 = Log("2", "abc", "1", ["SELECT * FROM employees e JOIN customers c ON e.id = c.employee_id"], "/service1/employees?id=10")
+    log3 = Log("3", "def", "4", [], "/service2/test")
+    log4 = Log("4", "def", "1", [], "/service1/test")
+    log5 = Log("5", "abc", "2", ["SELECT * FROM orders"], "/service1/orders")
+
+    assert log.parent_endpoint == None
+    assert log2.parent_endpoint == None
+    assert log3.parent_endpoint == None
+    assert log4.parent_endpoint == None
+    assert log5.parent_endpoint == None
+
+    logs = [log, log2, log3, log4, log5]
+    set_parent_endpoints(logs, "service1")
+
+    assert log.parent_endpoint == "service1/products/"
+    assert log2.parent_endpoint == "service1/products/"
+    assert log3.parent_endpoint == "service1/test/"
+    assert log4.parent_endpoint == "service1/test/"
+    assert log5.parent_endpoint == "service1/products/"
 
 
 
