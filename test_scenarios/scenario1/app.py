@@ -19,10 +19,10 @@ RequestsInstrumentor().instrument()
 Psycopg2Instrumentor().instrument(enable_commenter=True, commenter_options={})
 
 db_params = {
-    'dbname': 'szenariodb',  
+    'dbname': 'scenariodb',  
     'user': 'postgres',
     'password': 'postgres',
-    'host': 'szenario_db', 
+    'host': 'scenario_db', 
     'port': '5432'      
 }
 
@@ -40,7 +40,7 @@ def create_table(colnames, values):
     table += '</table>'
     return table
 
-@app.route('/employees')
+@app.route('/scenario1/employees')
 def get_employees():
     conn = psycopg2.connect(**db_params)
     cursor = conn.cursor()
@@ -59,7 +59,7 @@ def get_employees():
     return table
 
 
-@app.route('/employees/insert', methods=["POST"])
+@app.route('/scenario1/employees/insert', methods=["POST"])
 def insert_employee(): 
     data = request.get_json()
     if not data or not all(key in data for key in ['name', 'position', 'start_date']):
@@ -82,7 +82,7 @@ def insert_employee():
 
     return "Employee created"
 
-@app.route('/employees/delete', methods=["POST"])
+@app.route('/scenario1/employees/delete', methods=["POST"])
 def delete_employee(): 
     id = request.args.get("id")
 
@@ -97,7 +97,7 @@ def delete_employee():
 
     return "Employee deleted"
 
-@app.route('/employees/updatePosition', methods=["POST"])
+@app.route('/scenario1/employees/updatePosition', methods=["POST"])
 def update_employee(): 
     data = request.get_json()
 
@@ -116,7 +116,7 @@ def update_employee():
 
     return "Employee updated"
 
-@app.route('/orders')
+@app.route('/scenario1/orders')
 def get_orders():
     conn = psycopg2.connect(**db_params)
     cursor = conn.cursor()
@@ -132,6 +132,6 @@ def get_orders():
     table = create_table(colnames, orders)
     return table
 
-@app.route('/')
+@app.route('/scenario1/')
 def hello():
     return "Hello World from szenario1!"

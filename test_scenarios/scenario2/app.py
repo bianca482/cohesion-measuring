@@ -18,10 +18,10 @@ RequestsInstrumentor().instrument()
 Psycopg2Instrumentor().instrument(enable_commenter=True, commenter_options={})
 
 db_params = {
-    'dbname': 'szenariodb',  
+    'dbname': 'scenariodb',  
     'user': 'postgres',
     'password': 'postgres',
-    'host': 'szenario_db', 
+    'host': 'scenario_db', 
     'port': '5432'      
 }
 
@@ -39,7 +39,7 @@ def create_table(colnames, values):
     table += '</table>'
     return table
 
-@app.route('/employees')
+@app.route('/scenario2/employees')
 def get_employees():
     conn = psycopg2.connect(**db_params)
     cursor = conn.cursor()
@@ -57,7 +57,7 @@ def get_employees():
     table = create_table(colnames, employees)
     return table
 
-@app.route('/orders')
+@app.route('/scenario2/orders')
 def get_orders():
     conn = psycopg2.connect(**db_params)
     cursor = conn.cursor()
@@ -75,6 +75,6 @@ def get_orders():
     table = create_table(colnames, orders)
     return table
 
-@app.route('/')
+@app.route('/scenario2/')
 def hello():
     return "Hello World from szenario2!"

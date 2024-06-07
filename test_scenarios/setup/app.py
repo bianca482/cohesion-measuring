@@ -18,14 +18,14 @@ RequestsInstrumentor().instrument()
 Psycopg2Instrumentor().instrument(enable_commenter=True, commenter_options={})
 
 db_params = {
-    'dbname': 'szenariodb',  
+    'dbname': 'scenariodb',  
     'user': 'postgres',
     'password': 'postgres',
-    'host': 'szenario_db', 
+    'host': 'scenario_db', 
     'port': '5432'      
 }
 
-@app.route('/init')
+@app.route('/setup/init')
 def init():
     create_table_query = '''
     CREATE TABLE IF NOT EXISTS products (
@@ -147,6 +147,6 @@ def init():
 
     return "done!"
 
-@app.route('/')
+@app.route('/setup/')
 def hello():
     return "Hello World from setup!"
