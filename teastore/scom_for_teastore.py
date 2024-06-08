@@ -12,8 +12,10 @@ for i, f in enumerate(files):
 
     c = cohesion.calculate_scom(data, service_names[i])
     grouped_logs = log.get_grouped_logs_from_file(data, service_names[i])
-    calls = log.get_number_of_calls_from_file(data, service_names[i])
+    calls_per_table = log.get_number_of_calls_from_file(data, service_names[i])
+    endpoint_calls = log.get_number_of_endpoint_calls_from_file(data, service_names[i])
 
     print(f"Cohesion for Service {service_names[i]}: {c}")
     print(f"Grouped logs for {f}: {grouped_logs}")
-    print(f"Number of calls for {f}: {calls}")
+    print(f"Number of calls per table: {calls_per_table}")
+    print(f"Number of endpoint calls: {endpoint_calls}")

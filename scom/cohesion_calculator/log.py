@@ -174,7 +174,7 @@ def extract_logs(result, service_name):
 
     return logs
 
-def get_number_of_calls(logs):
+def get_number_of_calls_per_table(logs):
     grouped_logs = group_logs(logs, False)
     calls = {}
 
@@ -184,6 +184,16 @@ def get_number_of_calls(logs):
 
     return calls
 
+def get_number_of_endpoint_calls(logs):
+    n_calls = {}
+
+    for log in logs:
+        parent = log.parent_endpoint
+        if parent is not None or '':
+            n_calls[parent] = n_calls.setdefault(parent, 0) + 1
+
+    return n_calls
+
 def get_grouped_logs_from_file(jsonfile, service_name):
     logs = extract_logs(jsonfile, service_name)
 
@@ -192,4 +202,10 @@ def get_grouped_logs_from_file(jsonfile, service_name):
 def get_number_of_calls_from_file(jsonfile, service_name):
     logs = extract_logs(jsonfile, service_name)
 
-    return get_number_of_calls(logs)
+    return get_number_of_calls_per_table(logs)
+
+
+def get_number_of_endpoint_calls_from_file(jsonfile, service_name):
+    logs = extract_logs(jsonfile, service_name)
+
+    return get_number_of_endpoint_calls(logs)
