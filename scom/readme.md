@@ -25,7 +25,7 @@ pytest-runner
 
 ### Run tests (optional)
 
-`pytest tests/tests.py`
+`pytest tests.py`
 
 ### Install library
 

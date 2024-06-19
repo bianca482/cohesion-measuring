@@ -104,35 +104,48 @@ def test_calculate_connection_intensity_middle():
     assert connection_intensity == 0.5
     
 def test_scom_too_few_endpoints(): 
-    grouped_logs = {
-        "service1/orders/": ["products", "employees"]
-    }
+    file = open("../test_scenarios/test_data/scenario1.json")
+    data = json.load(file)
+    file.close()
 
-    assert scom(grouped_logs) == "Too few endpoints"
+    logs = extract_logs(data, "scenario7")
+    grouped_logs = group_logs(logs)
+    endpoint_calls = get_number_of_endpoint_calls(logs)
+
+    assert scom(grouped_logs, endpoint_calls) == "Too few endpoints"
         
 def test_scom_best(): 
-    grouped_logs = {
-        "service1/orders/": ["products", "customers"],
-        "service1/customers/": ["customers", "products"]
-    }
+    file = open("../test_scenarios/test_data/scenario2.json")
+    data = json.load(file)
+    file.close()
 
-    assert scom(grouped_logs) == 1
+    logs = extract_logs(data, "scenario2")
+    grouped_logs = group_logs(logs)
+    endpoint_calls = get_number_of_endpoint_calls(logs)
+
+    assert scom(grouped_logs, endpoint_calls) == 1
 
 def test_scom_worst(): 
-    grouped_logs = {
-        "service1/orders/": ["products"],
-        "service1/customers/": ["customers"]
-    }
+    file = open("../test_scenarios/test_data/scenario1.json")
+    data = json.load(file)
+    file.close()
 
-    assert scom(grouped_logs) == 0
+    logs = extract_logs(data, "scenario1")
+    grouped_logs = group_logs(logs)
+    endpoint_calls = get_number_of_endpoint_calls(logs)
+
+    assert scom(grouped_logs, endpoint_calls) == 0
 
 def test_scom_middle(): 
-    grouped_logs = {
-        "service1/orders/": ["products", "employees"],
-        "service1/customers/": ["customers", "products"]
-    }
+    file = open("../test_scenarios/test_data/scenario3.json")
+    data = json.load(file)
+    file.close()
 
-    assert scom(grouped_logs) == 0.5
+    logs = extract_logs(data, "scenario3")
+    grouped_logs = group_logs(logs)
+    endpoint_calls = get_number_of_endpoint_calls(logs)
+
+    assert scom(grouped_logs, endpoint_calls) == 0.5
 
 def test_calculate_scom():
     file = open("../test_scenarios/test_data/scenario2.json")

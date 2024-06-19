@@ -1,0 +1,53 @@
+{
+  "traceID": "af3b9db37c46c81c00b70e139897f396",
+  "spanID": "e89c6f6e625f21ea",
+  "operationName": "/tools.descartes.teastore.persistence/rest/*",
+  "references": [
+    {
+      "refType": "CHILD_OF",
+      "traceID": "af3b9db37c46c81c00b70e139897f396",
+      "spanID": "ace5470dfb7a3664"
+    }
+  ],
+  "startTime": 1717586011939121,
+  "duration": 374,
+  "tags": [
+    {
+      "key": "http.host",
+      "type": "string",
+      "value": "persistence:8080"
+    },
+    {
+      "key": "http.method",
+      "type": "string",
+      "value": "GET"
+    },
+    {
+      "key": "http.response_content_length",
+      "type": "int64",
+      "value": 131
+    },
+    {
+      "key": "http.scheme",
+      "type": "string",
+      "value": "http"
+    },
+    {
+      "key": "http.server_name",
+      "type": "string",
+      "value": "persistence"
+    },
+    {
+      "key": "http.status_code",
+      "type": "int64",
+      "value": 200
+    },
+    {
+      "key": "http.target",
+      "type": "string",
+      "value": "tools.descartes.teastore.registry/rest/services/tools.descartes.teastore.persistence/persistence:8080/"
+    }
+  ],
+  "hasChildren": false,
+  "childSpanIds": []
+}

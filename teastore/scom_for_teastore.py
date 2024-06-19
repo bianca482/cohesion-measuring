@@ -2,8 +2,9 @@ from cohesion_calculator import cohesion
 from cohesion_calculator import log
 import json
 
-files = ["auth_050624.json", "image_050624.json", "persistence_050624.json", "recommender_050624.json", "registry_050624.json", "webui_050624.json"]
-service_names = ["auth", "image", "persistence", "recommender", "registry", "webui"]
+#files = ["auth_050624.json", "image_050624.json", "persistence_050624.json", "recommender_050624.json", "registry_050624.json", "webui_050624.json"]
+files = ["auth_090624.json", "image_090624.json", "persistence_090624.json", "recommender_090624.json", "registry_090624.json", "webui_090624.json"]
+service_names = ["tools.descartes.teastore.auth", "tools.descartes.teastore.image", "tools.descartes.teastore.persistence", "tools.descartes.teastore.recommender", "tools.descartes.teastore.registry", "tools.descartes.teastore.webui"]
 
 for i, f in enumerate(files): 
     file = open(f"./test_data/{f}")

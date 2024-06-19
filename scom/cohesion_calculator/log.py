@@ -91,7 +91,7 @@ def set_parent_endpoints(logs, service_name):
     # get service parent for each trace id
     for log in logs: 
         endpoint_name = log.get_endpoint_name()
-        if endpoint_name != None and service_name in endpoint_name:
+        if endpoint_name != None and endpoint_name.startswith(service_name):
             if log.trace_id not in parents.keys():
                 parents[log.trace_id] = endpoint_name
 
