@@ -44,10 +44,14 @@ def scom(grouped_logs, endpoint_calls, weight_n_calls):
 
             weight = 1
 
-            if weight_n_calls:
+            if weight_n_calls and tables1 != tables2:
+                #print(f"{api1} und {api2}")
                 #n_involved_calls = total_calls_per_endpoint[api1] + total_calls_per_endpoint[api2]
                 n_involved_calls = endpoint_calls[api1] + endpoint_calls[api2]
+                #print(n_involved_calls)
+                #print(total_calls)
                 weight = n_involved_calls / total_calls
+                #print(weight)
 
             connection_intensity = calculate_connection_intensity(tables1, tables2)
             total_weighted_connections += connection_intensity * weight
@@ -66,14 +70,25 @@ def calculate_scom(jsonfile, service_name, weight_n_calls = True):
 import json
 
 def main():
-    name = "tools.descartes.teastore.persistence"
-    file = open(f"../../teastore/test_data/persistence_090624.json")
-    data = json.load(file)
-    file.close()
+    #name = "tools.descartes.teastore.persistence"
+    #file = open(f"../../teastore/test_data/persistence_090624.json")
+    #data = json.load(file)
+    #file.close()
 
-    logs = extract_logs(data, name)
-    print(calculate_scom(data, name))
+    #logs = extract_logs(data, name)
+    #print(calculate_scom(data, name))
     #set_parent_endpoints(logs, name)
+    new_logs = { 'tools.descartes.teastore.auth/rest/useractions/login/': ['PERSISTENCEUSER'], 
+            'tools.descartes.teastore.persistence/rest/users/name/': ['PERSISTENCEUSER'],
+            'tools.descartes.teastore.webui/loginAction/': ['PERSISTENCEUSER']}
+
+    new_calls = {'tools.descartes.teastore.auth/rest/useractions/login/': 486, 
+             'tools.descartes.teastore.persistence/rest/users/name/': 576,
+             'tools.descartes.teastore.webui/loginAction/': 516
+             }
+
+    print(f"New service without weights: {scom(new_logs, new_calls, False)}")
+    print(f"New service with weights: {scom(new_logs, new_calls, True)}")
 
 if __name__ == '__main__':
     main()

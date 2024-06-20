@@ -43,7 +43,7 @@ Number of endpoint calls: {
 
 ### Persistence
 
-Cohesion for Service tools.descartes.teastore.persistence: 0.288012486992716
+Cohesion for Service tools.descartes.teastore.persistence: 0.6
 
 Grouped logs for persistence_090624.json: {
 'tools.descartes.teastore.persistence/rest/categories/': ['PERSISTENCECATEGORY', 'PERSISTENCEPRODUCT'],
@@ -80,7 +80,7 @@ Number of endpoint calls: {
 
 ### Webui
 
-Cohesion for Service tools.descartes.teastore.webui: 0.1843241727425687
+Cohesion for Service tools.descartes.teastore.webui: 0.33759714766444987
 
 Grouped logs for webui_090624.json: {
 'tools.descartes.teastore.webui/category/': ['PERSISTENCEPRODUCT', 'PERSISTENCECATEGORY'],
