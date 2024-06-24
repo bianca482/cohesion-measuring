@@ -24,9 +24,9 @@ The file `scom_for_scenarios.py` contains some sample code to retrieve cohesion 
 
 There is also a Jupyer Notebook `cohesion_scenarios.ipynb` available to play around with the logs and cohesion calculation.
 
-## Results
+### SCOM Results
 
-### Scenario1
+#### Scenario1
 
 Cohesion for Service scenario1: 0.0
 
@@ -34,7 +34,7 @@ Grouped logs for scenario1.json: {'scenario1/orders/': ['orders', 'products'], '
 
 Number of calls for scenario1.json: {'scenario1/orders/': {'orders': 1, 'products': 1}, 'scenario1/employees/': {'customers': 2, 'employees': 2}}
 
-### Scenario2
+#### Scenario2
 
 Cohesion for Service scenario2: 1.0
 
@@ -42,10 +42,18 @@ Grouped logs for scenario2.json: {'scenario2/employees/': ['customers', 'orders'
 
 Number of calls for scenario2.json: {'scenario2/employees/': {'customers': 1, 'orders': 1, 'products': 1, 'employees': 1}, 'scenario2/orders/': {'products': 1, 'employees': 1, 'customers': 1, 'orders': 1}}
 
-### Scenario3
+#### Scenario3
 
 Cohesion for Service scenario3: 0.5
 
 Grouped logs for scenario3.json: {'scenario3/orders/': ['products', 'orders'], 'scenario3/employees/': ['customers', 'orders', 'employees']}
 
 Number of calls for scenario3.json: {'scenario3/orders/': {'products': 1, 'orders': 1}, 'scenario3/employees/': {'customers': 1, 'orders': 1, 'employees': 1}}
+
+### LSCC Cohesion
+
+LSCC Cohesion for Service scenario1: 0.0
+
+LSCC Cohesion for Service scenario2: 1.0
+
+LSCC Cohesion for Service scenario3: 0.25

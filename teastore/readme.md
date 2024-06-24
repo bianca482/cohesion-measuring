@@ -10,11 +10,11 @@ Note, that the `cohesion_calculator` library has to be installed - currently onl
 
 The file `scom_for_teastore.py` contains some sample code to retrieve cohesion values as well as additional information like grouped logs and number of calls for each database table per url. Run with `python scom_for_teastore.py`.
 
-## Results
+### SCOM Results
 
 Mit Berücksichtigung aller Calls
 
-### Auth
+#### Auth
 
 Cohesion for Service tools.descartes.teastore.auth: 0.3151177199504337
 
@@ -29,7 +29,7 @@ Number of endpoint calls: {
 'tools.descartes.teastore.auth/rest/useractions/logout/': 249,
 'tools.descartes.teastore.auth/rest/useractions/login/': 486}
 
-### Image
+#### Image
 
 Cohesion for Service tools.descartes.teastore.image: 1.0
 
@@ -41,7 +41,7 @@ Number of endpoint calls: {
 'tools.descartes.teastore.image/rest/image/getProductImages/': 8257,
 'tools.descartes.teastore.image/rest/image/getWebImages/': 8274}
 
-### Persistence
+#### Persistence
 
 Cohesion for Service tools.descartes.teastore.persistence: 0.6
 
@@ -59,7 +59,7 @@ Number of endpoint calls: {
 'tools.descartes.teastore.persistence/rest/products/category/': 110,
 'tools.descartes.teastore.persistence/rest/products/count/': 264}
 
-### Recommender
+#### Recommender
 
 Cohesion for Service tools.descartes.teastore.recommender: Too few endpoints
 
@@ -69,7 +69,7 @@ Grouped logs for recommender_090624.json: {
 Number of endpoint calls: {
 'tools.descartes.teastore.recommender/rest/recommend/': 23667}
 
-### Registry
+#### Registry
 
 Cohesion for Service tools.descartes.teastore.registry: Too few endpoints
 
@@ -78,7 +78,7 @@ Grouped logs for registry_090624.json: {}
 Number of endpoint calls: {
 'tools.descartes.teastore.registry/rest/services/tools.descartes.teastore.auth/': 116, 'tools.descartes.teastore.registry/rest/services/tools.descartes.teastore.persistence/': 462, 'tools.descartes.teastore.registry/rest/services/tools.descartes.teastore.recommender/recommender:8080/': 116, 'tools.descartes.teastore.registry/rest/services/tools.descartes.teastore.persistence/persistence:8080/': 116, 'tools.descartes.teastore.registry/rest/services/tools.descartes.teastore.recommender/': 230, 'tools.descartes.teastore.registry/rest/services/tools.descartes.teastore.webui/webui:8080/': 115, 'tools.descartes.teastore.registry/rest/services/tools.descartes.teastore.auth/auth:8080/': 115, 'tools.descartes.teastore.registry/rest/services/tools.descartes.teastore.image/image:8080/': 115, 'tools.descartes.teastore.registry/rest/services/tools.descartes.teastore.image/': 115}
 
-### Webui
+#### Webui
 
 Cohesion for Service tools.descartes.teastore.webui: 0.33759714766444987
 
@@ -102,3 +102,17 @@ Number of endpoint calls: {
 'tools.descartes.teastore.webui/product/': 2353,
 'tools.descartes.teastore.webui/cart/': 2431,
 'tools.descartes.teastore.webui/order/': 145}
+
+### LSCC Results
+
+LSCC Cohesion for Service tools.descartes.teastore.auth: 0.1111111111111111
+
+LSCC Cohesion for Service tools.descartes.teastore.image: 1.0
+
+LSCC Cohesion for Service tools.descartes.teastore.persistence: 0.4
+
+LSCC Cohesion for Service tools.descartes.teastore.recommender: 1
+
+LSCC Cohesion for Service tools.descartes.teastore.registry: Both tables and apis are null
+
+LSCC Cohesion for Service tools.descartes.teastore.webui: 0.25
