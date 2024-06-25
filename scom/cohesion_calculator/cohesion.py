@@ -22,7 +22,7 @@ def scom(grouped_logs, endpoint_calls, weight_n_calls = True):
 
     n_of_apis = len(apis)
     if n_of_apis <= 1:
-        return "Too few endpoints"
+        return "Undefined (There are too few endpoints to calculate SCOM)"
 
     total_calls = sum(endpoint_calls.values())
 
@@ -88,7 +88,7 @@ def lscc(grouped_logs):
     if n_tables == 0 and n_of_apis > 1: return 0
     if n_tables > 0 and n_of_apis == 0: return 1
     if n_of_apis == 1: return 1
-    if n_tables == 0 and n_of_apis == 0: return "Both tables and apis are null"
+    if n_tables == 0 and n_of_apis == 0: return "Undefined (There are no tables and no endpoints)"
 
     result = 0
 
