@@ -6,39 +6,56 @@ import os
 import json
 import requests
 
-JAEGER_TRACES_ENDPOINT = "http://localhost:16686/api/traces?limit=20000&"
-JAEGER_TRACES_PARAMS = "service="
-
+# Returns list of all traces for a service
 def get_traces(service):
-    """
-    Returns list of all traces for a service
-    """
-    url = JAEGER_TRACES_ENDPOINT + JAEGER_TRACES_PARAMS + service
+    url = "http://localhost:16686/api/traces?limit=5000&service=" + service
+
     try:
         response = requests.get(url)
         response.raise_for_status()
     except requests.exceptions.HTTPError as err:
         raise err
 
-    response = json.loads(response.text)
+    response = response.json()
     traces = response["data"]
     return traces
 
+# Write traces locally to files
 def write_traces(directory, traces):
-    """
-    Write traces locally to files
-    """
     for trace in traces:
         traceid = trace["traceID"]
-        path = directory + "/" + traceid + ".json"
+        path = os.path.join(directory, f"{traceid}.json")
         with open(path, 'w') as fd:
-            fd.write(json.dumps(trace))
+            json.dump(trace, fd, indent=3)
 
-# Pull traces for all the services & store locally as json files
-names = ["auth", "image", "persistence", "registry", "recommender", "webui"]
+# Combine all JSON files in a directory into a single JSON file
+def combine_jsons(name):
+    directory = f"./{name}/"
+    combined_traces = []
 
-for service in names: 
+    for filename in os.listdir(directory):
+        if filename.endswith('.json'):
+            path = os.path.join(directory, filename)
+
+            with open(path, 'r') as file:
+                try:
+                    trace = json.load(file)
+                    combined_traces.append(trace)
+                except json.JSONDecodeError as e:
+                    print(f"Error decoding {filename}: {e}")
+
+    combined_data = {"data": combined_traces}
+    save_file_path = f"{name}.json"
+
+    with open(save_file_path, "w") as save_file:
+        json.dump(combined_data, save_file, indent=3)
+
+names = ["auth", "image"]#, "persistence", "registry", "recommender", "webui"]
+
+for service in names:
     if not os.path.exists(service):
         os.makedirs(service)
+
     traces = get_traces(service)
     write_traces(service, traces)
+    combine_jsons(service)

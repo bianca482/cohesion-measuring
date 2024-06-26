@@ -12,3 +12,4 @@
 /results/recommender/*
 /results/registry/*
 /results/webui/*
+/results/*.json

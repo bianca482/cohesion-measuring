@@ -1,4 +1,5 @@
-from cohesion_calculator.log import group_logs, extract_logs, get_number_of_endpoint_calls, set_parent_endpoints, get_number_of_calls_per_table
+from cohesion_calculator.log import group_logs, extract_logs, get_number_of_endpoint_calls, set_parent_endpoints, get_number_of_calls_per_table, get_grouped_logs_from_file
+import json
 
 def filter_empty_apis(apis):
     return {k: v for k, v in apis.items() if v}
@@ -67,11 +68,41 @@ def calculate_scom(jsonfile, service_name, weight_n_calls = True):
     #endpoint_calls = get_number_of_calls_per_table(logs)
     return scom(grouped_logs, endpoint_calls, weight_n_calls)
 
-import json
+def main(): 
+    file = open("../../auth.json", "r")
+    data = json.load(file)
+    file.close()
+    c = extract_logs(data, "tools.descartes.teastore.auth")
+    grouped_logs = group_logs(c)
+    print(grouped_logs)
 
-# l = Anzahl an Attributen (Datenbanktabellen)
-# k = Anzahl an Methoden (APIs)
-# xi = Anzahl an Methoden (APIs), welche Attribut (Datenbanktabelle) i referenzieren
+"""def main():
+    name = "tools.descartes.teastore.persistence"
+    file = open(f"../../teastore/test_data/persistence_090624.json")
+    data = json.load(file)
+    file.close()
+
+    logs = extract_logs(data, name)
+    grouped_logs = group_logs(logs)
+    print(lscc(grouped_logs))
+
+    #print(calculate_scom(data, name))
+    #set_parent_endpoints(logs, name)
+    #new_logs = { 'tools.descartes.teastore.auth/rest/useractions/login/': ['PERSISTENCEUSER'], 
+    #        'tools.descartes.teastore.persistence/rest/users/name/': ['PERSISTENCEUSER'],
+    #        'tools.descartes.teastore.webui/loginAction/': ['PERSISTENCEUSER']}
+
+    #new_calls = {'tools.descartes.teastore.auth/rest/useractions/login/': 486, 
+    #         'tools.descartes.teastore.persistence/rest/users/name/': 576,
+    #         'tools.descartes.teastore.webui/loginAction/': 516
+    #         }
+
+    #print(f"New service without weights: {scom(new_logs, new_calls, False)}")
+    #print(f"New service with weights: {scom(new_logs, new_calls, True)}")
+"""
+if __name__ == '__main__':
+    main()
+
 
 
 def lscc(grouped_logs):  
@@ -106,33 +137,5 @@ def calculate_lscc(jsonfile, service_name):
     logs = extract_logs(jsonfile, service_name)
     grouped_logs = group_logs(logs)
     return lscc(grouped_logs)
-
-"""def main():
-    name = "tools.descartes.teastore.persistence"
-    file = open(f"../../teastore/test_data/persistence_090624.json")
-    data = json.load(file)
-    file.close()
-
-    logs = extract_logs(data, name)
-    grouped_logs = group_logs(logs)
-    print(lscc(grouped_logs))
-
-    #print(calculate_scom(data, name))
-    #set_parent_endpoints(logs, name)
-    #new_logs = { 'tools.descartes.teastore.auth/rest/useractions/login/': ['PERSISTENCEUSER'], 
-    #        'tools.descartes.teastore.persistence/rest/users/name/': ['PERSISTENCEUSER'],
-    #        'tools.descartes.teastore.webui/loginAction/': ['PERSISTENCEUSER']}
-
-    #new_calls = {'tools.descartes.teastore.auth/rest/useractions/login/': 486, 
-    #         'tools.descartes.teastore.persistence/rest/users/name/': 576,
-    #         'tools.descartes.teastore.webui/loginAction/': 516
-    #         }
-
-    #print(f"New service without weights: {scom(new_logs, new_calls, False)}")
-    #print(f"New service with weights: {scom(new_logs, new_calls, True)}")
-
-if __name__ == '__main__':
-    main()
-"""
 
 
