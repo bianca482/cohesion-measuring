@@ -84,13 +84,33 @@ class Log:
         
         return None
 
-def group_logs(logs, service_name, remove_duplicates = True):
+
+def set_parent_endpoints(logs, service_name):
+    # Create a dictionary to store parents
+    parents = {}
+
+    # get service parent for each trace id
+    for log in logs: 
+        endpoint_name = log.get_endpoint_name()
+        if endpoint_name != None and endpoint_name.startswith(service_name):
+            if log.trace_id not in parents.keys():
+                parents[log.trace_id] = endpoint_name
+
+    for log in logs:
+        endpoint_name = log.get_endpoint_name()
+        if endpoint_name != None:
+            parent = parents.get(log.trace_id)
+            if parent:
+                log.parent_endpoint = parent
+
+    return logs
+
+def group_logs(logs, remove_duplicates = True):
     grouped_logs = {}
 
     for log in logs: 
         table_names = log.get_table_names()
-        parent = log.parent_endpoint
-        if table_names != None and parent != None and parent.startswith(service_name):
+        if table_names != None and log.parent_endpoint != None:
             endpoint_name = log.parent_endpoint
 
             if endpoint_name not in grouped_logs:
@@ -107,18 +127,7 @@ def group_logs(logs, service_name, remove_duplicates = True):
     return grouped_logs
 
 
-
-def set_parent_endpoints(logs, parents):
-    for log in logs:
-        endpoint_name = log.get_endpoint_name()
-        if endpoint_name != None:
-            parent = parents.get(log.trace_id)
-            if parent:
-                log.parent_endpoint = parent
-
-    return logs
-
-def extract_logs(result, parents):
+def extract_logs(result, service_name):
     logs = []
  
     for data in result["data"]:
@@ -144,6 +153,9 @@ def extract_logs(result, parents):
                         if tag["key"] == "http.target":
                             http_target = tag["value"]
 
+            if http_target == None:
+                continue
+
             if "references" in log: 
                 for r in log["references"]:
                     parent_id = r["spanID"]
@@ -158,39 +170,9 @@ def extract_logs(result, parents):
 
             logs.append(span_obj)
 
-    parent_endpoints = {}
-
-    for log in logs: 
-        if log.http_target == None:
-            logs.remove(log)
-        elif log.trace_id in parents.keys(): 
-            parent_endpoints[log.trace_id] = log.get_endpoint_name()
-
-    logs = set_parent_endpoints(logs, parent_endpoints)
+    logs = set_parent_endpoints(logs, service_name)
 
     return logs
-
-
-def find_first_span_by_service(traces, service_name):
-    first_spans = {}
-
-    for trace in traces['data']:
-        trace_id = trace['traceID']
-        spans = trace['spans']
-
-        # Filter spans whose URL starts with the service name
-        filtered_spans = [
-            span for span in spans if any(
-                tag['key'] == 'http.target' and tag['value'].startswith(f"/{service_name}") for tag in span['tags']
-            )
-        ]
-
-        if filtered_spans:
-            # Find the span with the earliest startTime among the filtered spans
-            first_span = min(filtered_spans, key=lambda span: span['startTime'])
-            first_spans[trace_id] = first_span
-
-    return first_spans
 
 def get_number_of_calls_per_table(logs):
     grouped_logs = group_logs(logs, False)
@@ -228,21 +210,21 @@ def get_number_of_endpoint_calls_from_file(jsonfile, service_name):
 
     return get_number_of_endpoint_calls(logs)
 
+
 def main(): 
     file = open("../../teastore/test_data/auth_020624.json", 'r')
+    #file = open("../../results/auth_jaegerui.json", "r")
     #file = open("../../results/auth.json", "r")
+    #file = open("../../results/traces-1719484629243.json", "r")
+    
     data = json.load(file)
     file.close()
     name = "tools.descartes.teastore.auth"
-    parents = find_first_span_by_service(data, name)
-    c = extract_logs(data, parents)
-    grouped = group_logs(c,  name) 
+    c = extract_logs(data, name)
+    grouped = group_logs(c) 
     print(grouped)
-    #for i,l in enumerate(c):
-    #    print(l.parent_endpoint)
 
-   # grouped_logs = group_logs(c)
-   # print(grouped_logs)
+
 
 if __name__ == '__main__':
     main()

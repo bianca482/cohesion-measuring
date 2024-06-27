@@ -8,7 +8,7 @@ import requests
 
 # Returns list of all traces for a service
 def get_traces(service):
-    url = "http://localhost:16686/api/traces?limit=5000&service=" + service
+    url = "http://localhost:16686/api/traces?limit=1500&service=" + service
 
     try:
         response = requests.get(url)
@@ -50,7 +50,7 @@ def combine_jsons(name):
     with open(save_file_path, "w") as save_file:
         json.dump(combined_data, save_file, indent=3)
 
-names = ["auth", "image"]#, "persistence", "registry", "recommender", "webui"]
+names = ["auth"]#, "image"], "persistence", "registry", "recommender", "webui"]
 
 for service in names:
     if not os.path.exists(service):
