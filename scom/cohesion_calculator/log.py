@@ -84,12 +84,13 @@ class Log:
         
         return None
 
-def group_logs(logs, remove_duplicates = True):
+def group_logs(logs, service_name, remove_duplicates = True):
     grouped_logs = {}
 
     for log in logs: 
         table_names = log.get_table_names()
-        if table_names != None and log.parent_endpoint != None:
+        parent = log.parent_endpoint
+        if table_names != None and parent != None and parent.startswith(service_name):
             endpoint_name = log.parent_endpoint
 
             if endpoint_name not in grouped_logs:
@@ -157,11 +158,15 @@ def extract_logs(result, parents):
 
             logs.append(span_obj)
 
+    parent_endpoints = {}
+
     for log in logs: 
         if log.http_target == None:
             logs.remove(log)
+        elif log.trace_id in parents.keys(): 
+            parent_endpoints[log.trace_id] = log.get_endpoint_name()
 
-    logs = set_parent_endpoints(logs, parents)
+    logs = set_parent_endpoints(logs, parent_endpoints)
 
     return logs
 
@@ -183,7 +188,7 @@ def find_first_span_by_service(traces, service_name):
         if filtered_spans:
             # Find the span with the earliest startTime among the filtered spans
             first_span = min(filtered_spans, key=lambda span: span['startTime'])
-            first_spans[trace_id] = first_span['spanID']
+            first_spans[trace_id] = first_span
 
     return first_spans
 
@@ -228,12 +233,11 @@ def main():
     #file = open("../../results/auth.json", "r")
     data = json.load(file)
     file.close()
-    parents = find_first_span_by_service(data, "tools.descartes.teastore.auth")
+    name = "tools.descartes.teastore.auth"
+    parents = find_first_span_by_service(data, name)
     c = extract_logs(data, parents)
-    grouped = group_logs(c)
-
+    grouped = group_logs(c,  name) 
     print(grouped)
-
     #for i,l in enumerate(c):
     #    print(l.parent_endpoint)
 
