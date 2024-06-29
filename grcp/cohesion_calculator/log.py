@@ -121,9 +121,8 @@ def extract_logs(result, service_name):
     for data in result["data"]:
         for log in data["spans"]:
             db_tables = []
-            #http_target = None
+            http_target = ""
             start_time = log["startTime"]
-            operationName = log["operationName"]
 
             for tag in log["tags"]:
                 if "key" in tag:
@@ -132,10 +131,8 @@ def extract_logs(result, service_name):
                         db_tables.append(tag["vStr"])
 
                     if tag["key"] == "http.target":
-                        operationName = tag["vStr"]
+                        http_target = tag["vStr"]
 
-            if operationName == None:
-                continue
 
             if "references" in log:   
                 for reference in log["references"]:
@@ -144,12 +141,12 @@ def extract_logs(result, service_name):
                             if tag["key"] == "db.sql.table":
                                 db_tables.append(tag["vStr"])
                             if tag["key"] == "http.target":
-                                operationName = tag["vStr"]
+                                http_target = tag["vStr"]
                 
             span_obj = Log(
                 span_id=log['spanId'], 
                 trace_id=log["traceId"],
-                http_target = operationName,
+                http_target = http_target,
                 db_tables = db_tables, 
                 start_time = start_time
             )

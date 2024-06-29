@@ -10,23 +10,21 @@ def is_number(value):
         return False
 
 class Log:
-    def __init__(self, span_id, trace_id, parent_id, db_tables, http_target, start_time):
+    def __init__(self, span_id, trace_id, db_tables, http_target, start_time):
         self.span_id = span_id
         self.trace_id = trace_id
-        self.parent_id = parent_id
         self.db_tables = db_tables
         self.http_target = http_target
         self.start_time = start_time
         self.parent_endpoint = None
 
     def __repr__(self):
-        return f"Log(span_id={self.span_id}, trace_id={self.trace_id}, parent_id={self.parent_id}, db_tables={self.db_tables}, http_target={self.http_target})"
+        return f"Log(span_id={self.span_id}, trace_id={self.trace_id}, db_tables={self.db_tables}, http_target={self.http_target})"
 
     def to_json(self):
         return json.dumps({
             'spanId': self.span_id,
             'traceId': self.trace_id,
-            'parentId': self.parent_id,
             'db_tables': self.db_tables,
             'http_target': self.http_target
         }, indent=2)
@@ -122,9 +120,8 @@ def extract_logs(result, service_name):
  
     for data in result["data"]:
         for log in data["spans"]:
-            parent_id = None
             db_tables = []
-            http_target = None
+            http_target = ""
             start_time = log["startTime"]
 
             for tag in log["tags"]:
@@ -135,26 +132,19 @@ def extract_logs(result, service_name):
 
                     if tag["key"] == "http.target":
                         http_target = tag["value"]
-            
-            for reference in log["references"]:
-                if "span" in reference: 
-                    for tag in reference["span"]["tags"]:
-                        if tag["key"] == "db.sql.table":
-                            db_tables.append(tag["value"])
-                        if tag["key"] == "http.target":
-                            http_target = tag["value"]
 
-            if http_target == None:
-                continue
-
-            if "references" in log: 
-                for r in log["references"]:
-                    parent_id = r["spanID"]
-            
+            if "references" in log:   
+                for reference in log["references"]:
+                    if "span" in reference: 
+                        for tag in reference["span"]["tags"]:
+                            if tag["key"] == "db.sql.table":
+                                db_tables.append(tag["value"])
+                            if tag["key"] == "http.target":
+                                http_target = tag["value"]
+                
             span_obj = Log(
                 span_id=log['spanID'], 
-                trace_id=log["traceID"], 
-                parent_id = parent_id,
+                trace_id=log["traceID"],
                 http_target = http_target,
                 db_tables = db_tables, 
                 start_time = start_time
@@ -204,10 +194,10 @@ def get_number_of_endpoint_calls_from_file(jsonfile, service_name):
 
 
 def main(): 
-    #file = open("../../teastore/test_data/auth_020624.json", 'r')
-    file = open("../../results/auth_jaegerui.json", "r")
-    #file = open("../../results/auth.json", "r")
-    #file = open("../../results/traces-1719484629243.json", "r")
+    file = open("../../teastore/test_data/auth_020624.json", 'r')
+    #file = open("../../jaeger_api/auth_jaegerui.json", "r")
+    #file = open("../../jaeger_api/auth.json", "r")
+    #file = open("../../grcp/auth.json", "r")
     
     data = json.load(file)
     file.close()
