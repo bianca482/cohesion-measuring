@@ -1,9 +1,9 @@
-/scom/__pycache__
-/scom/.pytest_cache
-/scom/build
-/scom/dist
-/scom/*.egg-info
-/scom/cohesion_calculator/__pycache__
+/cohesion/__pycache__
+/cohesion/.pytest_cache
+/cohesion/build
+/cohesion/dist
+/cohesion/*.egg-info
+/cohesion/cohesion_calculator/__pycache__
 /teastore/test_data/*.json
 /teastore/cohesion_teastore.ipynb
 /jaeger_api/auth/*
@@ -14,5 +14,11 @@
 /jaeger_api/webui/*
 /jaeger_api/*.json
 /grcp/auth/*
+/grcp/image/*
+/grcp/persistence/*
+/grcp/recommender/*
+/grcp/registry/*
+/grcp/webui/*
+/grcp/*.json
 /grcp/*.json
 /grcp/__pycache__

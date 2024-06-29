@@ -12,9 +12,8 @@ def get_traces(service):
 
     try:
         response = requests.get(url)
-        response.raise_for_status()
-    except requests.exceptions.HTTPError as err:
-        raise err
+    except Exception as e:
+        print(e)
 
     response = response.json()
     traces = response["data"]
@@ -22,9 +21,10 @@ def get_traces(service):
 
 # Write traces locally to files
 def write_traces(directory, traces):
-    for trace in traces:
-        traceid = trace["traceID"]
-        path = os.path.join(directory, f"{traceid}.json")
+
+    for i, trace in enumerate(traces):
+        path = os.path.join(directory, f"{i}.json")
+
         with open(path, 'w') as fd:
             json.dump(trace, fd, indent=3)
 

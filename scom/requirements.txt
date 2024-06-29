@@ -1,6 +1,0 @@
-build
-setuptools
-wheel
-twine
-pytest
-pytest-runner
