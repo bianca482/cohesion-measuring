@@ -2,26 +2,6 @@ import json
 import re
 from collections import Counter
 
-table_name_pattern = re.compile(
-    r"""
-    (?i)   # Case-insensitive matching
-    \bFROM\s+([`'"]?[a-zA-Z_][\w$]*[`'"]?)|   
-    \bJOIN\s+([`'"]?[a-zA-Z_][\w$]*[`'"]?)|   
-    \bINTO\s+([`'"]?[a-zA-Z_][\w$]*[`'"]?)|  
-    \bUPDATE\s+([`'"]?[a-zA-Z_][\w$]*[`'"]?)| 
-    \bDELETE\s+FROM\s+([`'"]?[a-zA-Z_][\w$]*[`'"]?)  
-    """,
-    re.VERBOSE
-)
-
-def extract_table_names(sql):
-    matches = table_name_pattern.findall(sql)
-    #matches = [
-    #('employees', '', '', '', '', '', ''),
-    #('', 'customers', '', '', '', '', '')]
-    # filters out empty matches ('') and flattens result to normal list
-    return [match for sublist in matches for match in sublist if match]
-
 def is_number(value):
    try:
         float(value)
@@ -30,23 +10,24 @@ def is_number(value):
         return False
 
 class Log:
-    def __init__(self, span_id, trace_id, parent_id, db_statements, http_target):
+    def __init__(self, span_id, trace_id, parent_id, db_tables, http_target, start_time):
         self.span_id = span_id
         self.trace_id = trace_id
         self.parent_id = parent_id
-        self.db_statements = db_statements
+        self.db_tables = db_tables
         self.http_target = http_target
+        self.start_time = start_time
         self.parent_endpoint = None
 
     def __repr__(self):
-        return f"Log(span_id={self.span_id}, trace_id={self.trace_id}, parent_id={self.parent_id}, db_statements={self.db_statements}, http_target={self.http_target})"
+        return f"Log(span_id={self.span_id}, trace_id={self.trace_id}, parent_id={self.parent_id}, db_tables={self.db_tables}, http_target={self.http_target})"
 
     def to_json(self):
         return json.dumps({
             'spanId': self.span_id,
             'traceId': self.trace_id,
             'parentId': self.parent_id,
-            'db_statements': self.db_statements,
+            'db_tables': self.db_tables,
             'http_target': self.http_target
         }, indent=2)
     
@@ -68,34 +49,42 @@ class Log:
     
         return endpoint_name
 
-    def get_db_statement(self):
-        db_statements = self.db_statements
-
-        if len(db_statements) > 0:
-            return db_statements
-        
-        return None
 
     def get_table_names(self):
-        statement = self.get_db_statement()
-        
-        if statement is not None:
-            return extract_table_names(statement[0])
+
+        if len(self.db_tables) > 0:
+            return self.db_tables
         
         return None
 
+def group_traces_by_trace_id(traces):
+    grouped_traces = {}
+
+    for trace in traces:
+        trace_id = trace.trace_id
+        if trace_id not in grouped_traces:
+            grouped_traces[trace_id] = []
+        grouped_traces[trace_id].append(trace)
+
+    return grouped_traces
 
 def set_parent_endpoints(logs, service_name):
     # Create a dictionary to store parents
     parents = {}
+    grouped = group_traces_by_trace_id(logs)
 
-    # get service parent for each trace id
-    for log in logs: 
-        endpoint_name = log.get_endpoint_name()
-        if endpoint_name != None and endpoint_name.startswith(service_name):
-            if log.trace_id not in parents.keys():
-                parents[log.trace_id] = endpoint_name
+    for k, g in grouped.items():
+        # sort traces of all traceids by start time
+        g.sort(key=lambda x: x.start_time, reverse=False)
 
+        # go through all logs of a traceid and find the first which is from the service
+        for l in g:
+            name = l.get_endpoint_name()
+            if name != None and name.startswith(service_name): 
+                parents[k] = name
+                break
+
+    # set parents for all logs
     for log in logs:
         endpoint_name = log.get_endpoint_name()
         if endpoint_name != None:
@@ -110,6 +99,7 @@ def group_logs(logs, remove_duplicates = True):
 
     for log in logs: 
         table_names = log.get_table_names()
+        #print(f"{table_names}: {log.parent_endpoint}")
         if table_names != None and log.parent_endpoint != None:
             endpoint_name = log.parent_endpoint
 
@@ -133,13 +123,15 @@ def extract_logs(result, service_name):
     for data in result["data"]:
         for log in data["spans"]:
             parent_id = None
-            db_statements = []
+            db_tables = []
             http_target = None
+            start_time = log["startTime"]
 
             for tag in log["tags"]:
                 if "key" in tag:
-                    if tag["key"] == "db.statement":
-                        db_statements.append(tag["value"])
+                    # db.sql
+                    if tag["key"] == "db.sql.table":
+                        db_tables.append(tag["value"])
 
                     if tag["key"] == "http.target":
                         http_target = tag["value"]
@@ -147,9 +139,8 @@ def extract_logs(result, service_name):
             for reference in log["references"]:
                 if "span" in reference: 
                     for tag in reference["span"]["tags"]:
-                        if tag["key"] == "db.statement":
-                            db_statements.append(tag["value"])
-
+                        if tag["key"] == "db.sql.table":
+                            db_tables.append(tag["value"])
                         if tag["key"] == "http.target":
                             http_target = tag["value"]
 
@@ -164,8 +155,9 @@ def extract_logs(result, service_name):
                 span_id=log['spanID'], 
                 trace_id=log["traceID"], 
                 parent_id = parent_id,
-                db_statements = db_statements,
-                http_target = http_target
+                http_target = http_target,
+                db_tables = db_tables, 
+                start_time = start_time
             )
 
             logs.append(span_obj)
@@ -212,8 +204,8 @@ def get_number_of_endpoint_calls_from_file(jsonfile, service_name):
 
 
 def main(): 
-    file = open("../../teastore/test_data/auth_020624.json", 'r')
-    #file = open("../../results/auth_jaegerui.json", "r")
+    #file = open("../../teastore/test_data/auth_020624.json", 'r')
+    file = open("../../results/auth_jaegerui.json", "r")
     #file = open("../../results/auth.json", "r")
     #file = open("../../results/traces-1719484629243.json", "r")
     
@@ -221,6 +213,10 @@ def main():
     file.close()
     name = "tools.descartes.teastore.auth"
     c = extract_logs(data, name)
+    #p = set_parent_endpoints(c, name)
+    #for l in p: 
+     #   print(l)
+
     grouped = group_logs(c) 
     print(grouped)
 
