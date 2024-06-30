@@ -48,8 +48,8 @@ def scom(grouped_logs, endpoint_calls, weight_n_calls = True):
     return total_weighted_connections / (n_of_apis*(n_of_apis-1) / 2)
 
 
-def calculate_scom(jsonfile, service_name, weight_n_calls = True):
-    logs = log.extract_logs(jsonfile, service_name)
+def calculate_scom(jsonfile, service_name, weight_n_calls = True, api_type = "grpc"):
+    logs = log.extract_logs(jsonfile, service_name, api_type)
     grouped_logs = log.group_logs(logs)
     endpoint_calls = log.get_number_of_endpoint_calls(logs)
 
@@ -83,8 +83,8 @@ def lscc(grouped_logs):
 
     return result / (n_tables*n_of_apis * (n_of_apis-1))
 
-def calculate_lscc(jsonfile, service_name):
-    logs = log.extract_logs(jsonfile, service_name)
+def calculate_lscc(jsonfile, service_name, api_type = "grpc"):
+    logs = log.extract_logs(jsonfile, service_name, api_type)
     grouped_logs = log.group_logs(logs)
     
     return lscc(grouped_logs)

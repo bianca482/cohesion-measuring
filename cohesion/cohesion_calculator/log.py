@@ -191,13 +191,13 @@ def get_number_of_endpoint_calls_from_file(jsonfile, service_name, api_type = "g
 def main(): 
     #file = open("../../teastore/test_data/auth_020624.json", 'r')
     #file = open("../../http_api/auth_jaegerui.json", "r")
-    file = open("../../http_api/auth.json", "r")
-    #file = open("../../grcp_api/auth.json", "r")
+    #file = open("../../http_api/auth.json", "r")
+    file = open("../../grpc/auth.json", "r")
     
     data = json.load(file)
     file.close()
     name = "tools.descartes.teastore.auth"
-    c = extract_logs(data, name, "json")
+    c = extract_logs(data, name)
 
     grouped = group_logs(c) 
     print(grouped)
