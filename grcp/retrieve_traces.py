@@ -1,5 +1,5 @@
 import grpc
-from jaeger import query_pb2_grpc, query_pb2
+import query_pb2_grpc, query_pb2
 import os
 import json
 from google.protobuf.json_format import MessageToDict
@@ -22,23 +22,23 @@ def get_traces_for_service(service_name):
     return traces_json
 
 # Write traces locally to files
-def write_traces(service_name, traces):
+def write_traces(path, traces):
     for i, trace in enumerate(traces):
         for j, span in enumerate(trace["spans"]):
-            path = os.path.join(service_name, f"trace{i}_span{j}.json")
-            with open(path, 'w') as fd:
-                json.dump(trace, fd, indent=3)
+            file_path = os.path.join(path, f"trace{i}_span{j}.json")
+            with open(file_path, 'w') as file:
+                json.dump(trace, file, indent=3)
 
 # Combine all traces to a single json file
 def combine_jsons(service_name):
-    directory = f"./{service_name}/"
+    path = f"traces/{service_name}"
     combined_traces = []
 
-    for filename in os.listdir(directory):
+    for filename in os.listdir(path):
         if filename.endswith('.json'):
-            path = os.path.join(directory, filename)
+            file_path = os.path.join(path, filename)
 
-            with open(path, 'r') as file:
+            with open(file_path, 'r') as file:
                 try:
                     trace = json.load(file)
                     combined_traces.append(trace)
@@ -55,9 +55,10 @@ if __name__ == "__main__":
     service_names = ["auth", "image", "persistence", "registry", "recommender", "webui"]
 
     for service_name in service_names:
-        if not os.path.exists(f"traces/{service_name}"):
-            os.makedirs(f"traces/{service_name}")
+        path = f"traces/{service_name}"
+        if not os.path.exists(path):
+            os.makedirs(path)
 
         traces = get_traces_for_service(service_name)
-        write_traces(service_name, traces)
-        combine_jsons(service_name)
+        write_traces(path, traces)
+        #combine_jsons(service_name)

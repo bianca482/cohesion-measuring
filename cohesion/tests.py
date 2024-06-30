@@ -1,62 +1,54 @@
 import json
 from cohesion_calculator.cohesion import calculate_connection_intensity, scom, calculate_scom, filter_empty_apis
-from cohesion_calculator.log import Log, extract_table_names, extract_logs, group_logs, get_grouped_logs_from_file, set_parent_endpoints, get_number_of_endpoint_calls, get_number_of_calls_per_table, get_number_of_endpoint_calls_from_file, get_number_of_calls_from_file
+from cohesion_calculator.log import Log, extract_logs, group_logs, get_grouped_logs_from_file, set_parent_endpoints, get_number_of_endpoint_calls, get_number_of_calls_per_table, get_number_of_endpoint_calls_from_file, get_number_of_calls_from_file
 
-def test_extract_tables():
-    sql_statements = [
-        "SELECT name, email FROM employees;",
-        "SELECT * FROM employees e JOIN customers c ON e.id = c.employee_id;",
-        "INSERT INTO orders (customer_id, product_id, order_date) VALUES (1, 2, '2024-05-25');",
-        "UPDATE employees SET position = 'Manager' WHERE id = 1;",
-        "DELETE FROM customers WHERE id = 1;",
-    ]
 
-    table_names = []
+log = Log("span1", "trace1", ["products"], "/service1/products", 1)
+log2 = Log("span2", "trace1", ["employees", "customers"], "/service1/employees?id=10", 2)
+empty_log = Log("span3", "trace2", [], "", 3)
 
-    for sql in sql_statements:
-        table_names.append(extract_table_names(sql))
+span1 = Log("span1", "trace1", ["products"], "/service1/products", 10)
+span2 = Log("span2", "trace1", ["employees", "customers"], "/service1/employees?id=10", 20)
+span3 = Log("span3", "trace2", [], "/service2/test", 5)
+span4 = Log("span4", "trace2", [], "/service1/test", 30)
+span5 = Log("span5", "trace2", ["orders"], "/service1/orders", 45)
 
-    assert table_names[0] == ["employees"]
-    assert table_names[1] == ["employees", "customers"]
-    assert table_names[2] == ["orders"]
-    assert table_names[3] == ["employees"]
-    assert table_names[4] == ["customers"]
-
-log = Log("1", "abc", None, ["SELECT * FROM products"], "/service1/products")
-log2 = Log("2", "abc", "1", ["SELECT * FROM employees e JOIN customers c ON e.id = c.employee_id"], "/service1/employees?id=10")
-empty_log = Log("3", "def", None, [], None)
 
 def test_get_endpoint_name():
     assert log.get_endpoint_name() == "service1/products/"
     assert log2.get_endpoint_name() == "service1/employees/"
     assert empty_log.get_endpoint_name() == None
 
-def test_get_db_statement(): 
-    assert log.get_db_statement() == ["SELECT * FROM products"]
-    assert log2.get_db_statement() == ["SELECT * FROM employees e JOIN customers c ON e.id = c.employee_id"]
-    assert empty_log.get_db_statement() == None
-
 def test_get_table_names():
     assert log.get_table_names() == ["products"]
     assert log2.get_table_names() == ["employees", "customers"]
     assert empty_log.get_table_names() == None
 
-def test_extract_logs_with_nested_url(): 
-    file = open("../test_scenarios/test_data/scenario1.json")
-    result = json.load(file)
-    file.close()
+def test_is_number(): 
+    assert log.is_number(1) == True
+    assert log.is_number("34") == True
+    assert log.is_number("kjdfh") == False
+    assert log.is_number("+") == False
 
-    logs = extract_logs(result, "scenario1")
+def test_group_traces_by_trace_id():
+    result = log.group_traces_by_trace_id([span1, span2, span3, span4, span5])
+    assert result == {"trace1": [span1, span2], "trace2": [span3, span4, span5]}
 
-    assert logs[0].span_id == "186e4c8f97c57c94"
-    assert logs[0].get_endpoint_name() == "scenario1/orders/"
-    assert logs[0].get_db_statement() == None
-    assert logs[0].get_table_names() == None
+def test_set_parent_endpoints(): 
+    assert span1.parent_endpoint == None
+    assert span2.parent_endpoint == None
+    assert span3.parent_endpoint == None
+    assert span4.parent_endpoint == None
+    assert span5.parent_endpoint == None
 
-    assert logs[1].span_id == "9eb9be13e922fc0e"
-    assert logs[1].get_endpoint_name() == "scenario1/orders/"
-    assert logs[1].get_db_statement() == ['SELECT * FROM orders']
-    assert logs[1].get_table_names() == ["orders"]
+    logs = [span1, span2, span3, span4, span5]
+    set_parent_endpoints(logs, "service1")
+
+    assert span1.parent_endpoint == "service1/products/"
+    assert span2.parent_endpoint == "service1/products/"
+    assert span3.parent_endpoint == "service1/test/"
+    assert span4.parent_endpoint == "service1/test/"
+    assert span5.parent_endpoint == "service1/test/"
 
 def test_group_logs():
     logs = [log, log2, empty_log]
@@ -75,6 +67,22 @@ def test_group_logs_duplicate_values():
     assert grouped_logs == {
         "service1/products/": ["products", "employees", "customers"]
     }
+
+def test_extract_logs_with_nested_url(): 
+    file = open("../test_scenarios/test_data/scenario1.json")
+    result = json.load(file)
+    file.close()
+
+    logs = extract_logs(result, "scenario1")
+
+    assert logs[0].span_id == "186e4c8f97c57c94"
+    assert logs[0].get_endpoint_name() == "scenario1/orders/"
+    assert logs[0].get_table_names() == None
+
+    assert logs[1].span_id == "9eb9be13e922fc0e"
+    assert logs[1].get_endpoint_name() == "scenario1/orders/"
+    assert logs[1].get_table_names() == ["orders"]
+
 
 def test_calculate_connection_intensity_worst(): 
     grouped_logs = {
@@ -172,30 +180,6 @@ def test_retrieve_grouped_logs():
         'scenario1/employees/': ['customers', 'employees'],
         'scenario1/orders/': ['orders', 'products']
     }
-
-
-def test_set_parent_endpoints(): 
-    log = Log("1", "abc", None, ["SELECT * FROM products"], "/service1/products")
-    log2 = Log("2", "abc", "1", ["SELECT * FROM employees e JOIN customers c ON e.id = c.employee_id"], "/service1/employees?id=10")
-    log3 = Log("3", "def", "4", [], "/service2/test")
-    log4 = Log("4", "def", "1", [], "/service1/test")
-    log5 = Log("5", "abc", "2", ["SELECT * FROM orders"], "/service1/orders")
-
-    assert log.parent_endpoint == None
-    assert log2.parent_endpoint == None
-    assert log3.parent_endpoint == None
-    assert log4.parent_endpoint == None
-    assert log5.parent_endpoint == None
-
-    logs = [log, log2, log3, log4, log5]
-    set_parent_endpoints(logs, "service1")
-
-    assert log.parent_endpoint == "service1/products/"
-    assert log2.parent_endpoint == "service1/products/"
-    assert log3.parent_endpoint == "service1/test/"
-    assert log4.parent_endpoint == "service1/test/"
-    assert log5.parent_endpoint == "service1/products/"
-
 
 def test_get_number_of_calls():
     logs = [log, log2, empty_log]
