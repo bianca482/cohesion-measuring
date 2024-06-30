@@ -61,4 +61,4 @@ if __name__ == "__main__":
 
         traces = get_traces_for_service(service_name)
         write_traces(path, traces)
-        #combine_jsons(service_name)
+        combine_jsons(service_name)

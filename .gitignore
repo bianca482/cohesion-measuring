@@ -8,6 +8,6 @@
 /teastore/cohesion_teastore.ipynb
 /http_api/traces/*
 /http_api/*.json
-/grcp/traces/*
-/grcp/*.json
-/grcp/__pycache__
+/grpc/traces/*
+/grpc/*.json
+/grpc/__pycache__

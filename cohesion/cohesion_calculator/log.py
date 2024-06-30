@@ -106,12 +106,12 @@ def group_logs(logs, remove_duplicates = True):
     return grouped_logs
 
 
-def extract_logs(result, service_name, api_type = "json"):
+def extract_logs(result, service_name, api_type = "grpc"):
     logs = []
 
-    value = "value" if api_type == "json" else "vStr" 
-    span_id_value = "spanID" if api_type == "json" else "spanId"
-    trace_id_value = "traceID" if api_type == "json" else "traceId"
+    value = "vStr" if api_type == "grpc" else "value" 
+    span_id_value = "spanId" if api_type == "grpc" else "spanID"
+    trace_id_value = "traceId" if api_type == "grpc" else "traceID"
  
     for data in result["data"]:
         for log in data["spans"]:
@@ -171,18 +171,18 @@ def get_number_of_endpoint_calls(logs):
 
     return n_calls
 
-def get_grouped_logs_from_file(jsonfile, service_name, api_type = "json"):
+def get_grouped_logs_from_file(jsonfile, service_name, api_type = "grpc"):
     logs = extract_logs(jsonfile, service_name, api_type)
 
     return group_logs(logs)
 
-def get_number_of_calls_from_file(jsonfile, service_name, api_type = "json"):
+def get_number_of_calls_from_file(jsonfile, service_name, api_type = "grpc"):
     logs = extract_logs(jsonfile, service_name, api_type)
 
     return get_number_of_calls_per_table(logs)
 
 
-def get_number_of_endpoint_calls_from_file(jsonfile, service_name, api_type = "json"):
+def get_number_of_endpoint_calls_from_file(jsonfile, service_name, api_type = "grpc"):
     logs = extract_logs(jsonfile, service_name, api_type)
 
     return get_number_of_endpoint_calls(logs)
@@ -197,7 +197,7 @@ def main():
     data = json.load(file)
     file.close()
     name = "tools.descartes.teastore.auth"
-    c = extract_logs(data, name)
+    c = extract_logs(data, name, "json")
 
     grouped = group_logs(c) 
     print(grouped)
