@@ -1,48 +1,37 @@
 import grpc
-import query_pb2_grpc, query_pb2
-from google.protobuf.timestamp_pb2 import Timestamp
-import time
+from jaeger import query_pb2_grpc, query_pb2
 import os
 import json
 from google.protobuf.json_format import MessageToDict
 
-
+# Get traces from Jaeger gRPC server
 def get_traces_for_service(service_name):
-    # Connect to the Jaeger gRPC server
-    channel = grpc.insecure_channel('localhost:16685')  # Replace with your Jaeger gRPC endpoint
+    channel = grpc.insecure_channel('localhost:16685')
     client = query_pb2_grpc.QueryServiceStub(channel)
 
-    # Create a request
-    #end_time = int(time.time() * 1e6)  # Current time in microseconds
-    #start_time = end_time - (60 * 60 * 1e6)  # 1 hour ago in microseconds
 
     request = query_pb2.FindTracesRequest(
         query=query_pb2.TraceQueryParameters(
             service_name=service_name,
-           # start_time_min=Timestamp(seconds=int(start_time // 1e6), nanos=int((start_time % 1e6) * 1e3)),
-           # start_time_max=Timestamp(seconds=int(end_time // 1e6), nanos=int((end_time % 1e6) * 1e3))
         )
     )
 
-    # Get the traces
     response = client.FindTraces(request)
-
-    # Convert the response to json
     traces_json = [MessageToDict(trace) for trace in response]
 
     return traces_json
 
 # Write traces locally to files
-def write_traces(directory, traces):
+def write_traces(service_name, traces):
     for i, trace in enumerate(traces):
         for j, span in enumerate(trace["spans"]):
-           # traceid = span["traceId"]
-            path = os.path.join(directory, f"trace{i}_span{j}.json")
+            path = os.path.join(service_name, f"trace{i}_span{j}.json")
             with open(path, 'w') as fd:
                 json.dump(trace, fd, indent=3)
 
-def combine_jsons(name):
-    directory = f"./{name}/"
+# Combine all traces to a single json file
+def combine_jsons(service_name):
+    directory = f"./{service_name}/"
     combined_traces = []
 
     for filename in os.listdir(directory):
@@ -57,23 +46,18 @@ def combine_jsons(name):
                     print(f"Error decoding {filename}: {e}")
 
     combined_data = {"data": combined_traces}
-    save_file_path = f"{name}.json"
+    save_file_path = f"{service_name}.json"
 
     with open(save_file_path, "w") as save_file:
         json.dump(combined_data, save_file, indent=3)
 
 if __name__ == "__main__":
-    """names = ["auth"]#, "image"], "persistence", "registry", "recommender", "webui"]
+    service_names = ["auth", "image", "persistence", "registry", "recommender", "webui"]
 
-    for service in names:
-        if not os.path.exists(service):
-            os.makedirs(service)
+    for service_name in service_names:
+        if not os.path.exists(f"traces/{service_name}"):
+            os.makedirs(f"traces/{service_name}")
 
-        traces = get_traces_for_service(service)
-
-       # for i, t in enumerate(traces):
-       #     print(f"Trace {i}: {t} \n\n")
-       #     if i == 2:
-       #         break
-        write_traces(service, traces)"""
-combine_jsons("auth")
+        traces = get_traces_for_service(service_name)
+        write_traces(service_name, traces)
+        combine_jsons(service_name)

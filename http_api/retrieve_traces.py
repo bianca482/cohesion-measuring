@@ -1,14 +1,10 @@
-#!/usr/bin/env python
-
-# https://github.com/Ashmita152/jaeger-datasets/blob/master/bookinfo/extract.py
-
 import os
 import json
 import requests
 
 # Returns list of all traces for a service
 def get_traces(service):
-    url = "http://localhost:16686/api/traces?limit=1500&service=" + service
+    url = "http://localhost:16686/api/traces?service=" + service
 
     try:
         response = requests.get(url)
@@ -50,12 +46,12 @@ def combine_jsons(name):
     with open(save_file_path, "w") as save_file:
         json.dump(combined_data, save_file, indent=3)
 
-names = ["auth"]#, "image"], "persistence", "registry", "recommender", "webui"]
+service_names = ["auth", "image", "persistence", "registry", "recommender", "webui"]
 
-for service in names:
-    if not os.path.exists(service):
-        os.makedirs(service)
+for service_name in service_names:
+    if not os.path.exists(f"traces/{service_name}"):
+        os.makedirs(f"traces/{service_name}")
 
-    traces = get_traces(service)
-    write_traces(service, traces)
-    combine_jsons(service)
+    traces = get_traces(service_name)
+    write_traces(service_name, traces)
+    combine_jsons(service_name)

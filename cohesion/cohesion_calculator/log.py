@@ -106,8 +106,12 @@ def group_logs(logs, remove_duplicates = True):
     return grouped_logs
 
 
-def extract_logs(result, service_name):
+def extract_logs(result, service_name, api_type = "json"):
     logs = []
+
+    value = "value" if api_type == "json" else "vStr" 
+    span_id_value = "spanID" if api_type == "json" else "spanId"
+    trace_id_value = "traceID" if api_type == "json" else "traceId"
  
     for data in result["data"]:
         for log in data["spans"]:
@@ -118,10 +122,10 @@ def extract_logs(result, service_name):
             for tag in log["tags"]:
                 if "key" in tag:
                     if tag["key"] == "db.sql.table":
-                        db_tables.append(tag["value"])
+                        db_tables.append(tag[value])
 
                     if tag["key"] == "http.target":
-                        http_target = tag["value"]
+                        http_target = tag[value]
 
             """ if "references" in log:   
                 for reference in log["references"]:
@@ -133,8 +137,8 @@ def extract_logs(result, service_name):
                                 http_target = tag["value"]"""
                 
             span_obj = Log(
-                span_id=log['spanID'], 
-                trace_id=log["traceID"],
+                span_id=log[span_id_value], 
+                trace_id=log[trace_id_value],
                 http_target = http_target,
                 db_tables = db_tables, 
                 start_time = start_time
@@ -145,6 +149,7 @@ def extract_logs(result, service_name):
     logs = set_parent_endpoints(logs, service_name)
 
     return logs
+
 
 def get_number_of_calls_per_table(logs):
     grouped_logs = group_logs(logs, False)
@@ -166,27 +171,28 @@ def get_number_of_endpoint_calls(logs):
 
     return n_calls
 
-def get_grouped_logs_from_file(jsonfile, service_name):
-    logs = extract_logs(jsonfile, service_name)
+def get_grouped_logs_from_file(jsonfile, service_name, api_type = "json"):
+    logs = extract_logs(jsonfile, service_name, api_type)
 
     return group_logs(logs)
 
-def get_number_of_calls_from_file(jsonfile, service_name):
-    logs = extract_logs(jsonfile, service_name)
+def get_number_of_calls_from_file(jsonfile, service_name, api_type = "json"):
+    logs = extract_logs(jsonfile, service_name, api_type)
 
     return get_number_of_calls_per_table(logs)
 
 
-def get_number_of_endpoint_calls_from_file(jsonfile, service_name):
-    logs = extract_logs(jsonfile, service_name)
+def get_number_of_endpoint_calls_from_file(jsonfile, service_name, api_type = "json"):
+    logs = extract_logs(jsonfile, service_name, api_type)
 
     return get_number_of_endpoint_calls(logs)
 
 
 def main(): 
     #file = open("../../teastore/test_data/auth_020624.json", 'r')
-    #file = open("../../jaeger_api/auth_jaegerui.json", "r")
-    file = open("../../jaeger_api/auth.json", "r")
+    #file = open("../../http_api/auth_jaegerui.json", "r")
+    file = open("../../http_api/auth.json", "r")
+    #file = open("../../grcp_api/auth.json", "r")
     
     data = json.load(file)
     file.close()
