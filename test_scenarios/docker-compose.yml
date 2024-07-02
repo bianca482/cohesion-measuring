@@ -17,7 +17,7 @@ services:
       - "5000:5000"
     environment:
       - OTEL_SERVICE_NAME=setup
-      - OTEL_EXPORTER_OTLP_ENDPOINT=http://jaeger:4318 # accept OpenTelemetry Protocol (OTLP) over HTTP
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://jaeger:4318 # accept OpenTelemetry Protocol (OTLP) over HTTP (else, JaegerUI does not work)
 
   scenario1:
     build: ./scenario1

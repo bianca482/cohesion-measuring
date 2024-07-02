@@ -1,0 +1,247 @@
+{
+   "spans": [
+      {
+         "traceId": "ruqDkd4U+6CrGn9w3w+ONQ==",
+         "spanId": "g025T2X4MJw=",
+         "operationName": "SELECT",
+         "references": [
+            {
+               "traceId": "ruqDkd4U+6CrGn9w3w+ONQ==",
+               "spanId": "w+WlbGNWHOE="
+            }
+         ],
+         "startTime": "2024-07-02T10:53:11.757237112Z",
+         "duration": "0.001191021s",
+         "tags": [
+            {
+               "key": "otel.library.name",
+               "vStr": "opentelemetry.instrumentation.psycopg2"
+            },
+            {
+               "key": "otel.library.version",
+               "vStr": "0.46b0"
+            },
+            {
+               "key": "db.system",
+               "vStr": "postgresql"
+            },
+            {
+               "key": "db.name",
+               "vStr": "scenariodb"
+            },
+            {
+               "key": "db.statement",
+               "vStr": "SELECT * FROM products"
+            },
+            {
+               "key": "db.user",
+               "vStr": "postgres"
+            },
+            {
+               "key": "net.peer.name",
+               "vStr": "scenario_db"
+            },
+            {
+               "key": "net.peer.port",
+               "vType": "INT64",
+               "vInt64": "5432"
+            },
+            {
+               "key": "span.kind",
+               "vStr": "client"
+            },
+            {
+               "key": "internal.span.format",
+               "vStr": "otlp"
+            }
+         ],
+         "process": {
+            "serviceName": "scenario3",
+            "tags": [
+               {
+                  "key": "telemetry.sdk.language",
+                  "vStr": "python"
+               },
+               {
+                  "key": "telemetry.sdk.name",
+                  "vStr": "opentelemetry"
+               },
+               {
+                  "key": "telemetry.sdk.version",
+                  "vStr": "1.25.0"
+               }
+            ]
+         }
+      },
+      {
+         "traceId": "ruqDkd4U+6CrGn9w3w+ONQ==",
+         "spanId": "w+WlbGNWHOE=",
+         "operationName": "GET /scenario3/orders",
+         "startTime": "2024-07-02T10:53:11.742099680Z",
+         "duration": "0.017326796s",
+         "tags": [
+            {
+               "key": "otel.library.name",
+               "vStr": "opentelemetry.instrumentation.flask"
+            },
+            {
+               "key": "otel.library.version",
+               "vStr": "0.46b0"
+            },
+            {
+               "key": "http.method",
+               "vStr": "GET"
+            },
+            {
+               "key": "http.server_name",
+               "vStr": "0.0.0.0"
+            },
+            {
+               "key": "http.scheme",
+               "vStr": "http"
+            },
+            {
+               "key": "net.host.name",
+               "vStr": "localhost:5003"
+            },
+            {
+               "key": "http.host",
+               "vStr": "localhost:5003"
+            },
+            {
+               "key": "net.host.port",
+               "vType": "INT64",
+               "vInt64": "5000"
+            },
+            {
+               "key": "http.target",
+               "vStr": "/scenario3/orders"
+            },
+            {
+               "key": "net.peer.ip",
+               "vStr": "172.29.0.1"
+            },
+            {
+               "key": "net.peer.port",
+               "vType": "INT64",
+               "vInt64": "47694"
+            },
+            {
+               "key": "http.user_agent",
+               "vStr": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
+            },
+            {
+               "key": "http.flavor",
+               "vStr": "1.1"
+            },
+            {
+               "key": "http.route",
+               "vStr": "/scenario3/orders"
+            },
+            {
+               "key": "http.status_code",
+               "vType": "INT64",
+               "vInt64": "200"
+            },
+            {
+               "key": "span.kind",
+               "vStr": "server"
+            },
+            {
+               "key": "internal.span.format",
+               "vStr": "otlp"
+            }
+         ],
+         "process": {
+            "serviceName": "scenario3",
+            "tags": [
+               {
+                  "key": "telemetry.sdk.language",
+                  "vStr": "python"
+               },
+               {
+                  "key": "telemetry.sdk.name",
+                  "vStr": "opentelemetry"
+               },
+               {
+                  "key": "telemetry.sdk.version",
+                  "vStr": "1.25.0"
+               }
+            ]
+         }
+      },
+      {
+         "traceId": "ruqDkd4U+6CrGn9w3w+ONQ==",
+         "spanId": "l4bUfTxrVpY=",
+         "operationName": "SELECT",
+         "references": [
+            {
+               "traceId": "ruqDkd4U+6CrGn9w3w+ONQ==",
+               "spanId": "w+WlbGNWHOE="
+            }
+         ],
+         "startTime": "2024-07-02T10:53:11.758551434Z",
+         "duration": "0.000495054s",
+         "tags": [
+            {
+               "key": "otel.library.name",
+               "vStr": "opentelemetry.instrumentation.psycopg2"
+            },
+            {
+               "key": "otel.library.version",
+               "vStr": "0.46b0"
+            },
+            {
+               "key": "db.system",
+               "vStr": "postgresql"
+            },
+            {
+               "key": "db.name",
+               "vStr": "scenariodb"
+            },
+            {
+               "key": "db.statement",
+               "vStr": "SELECT * FROM orders"
+            },
+            {
+               "key": "db.user",
+               "vStr": "postgres"
+            },
+            {
+               "key": "net.peer.name",
+               "vStr": "scenario_db"
+            },
+            {
+               "key": "net.peer.port",
+               "vType": "INT64",
+               "vInt64": "5432"
+            },
+            {
+               "key": "span.kind",
+               "vStr": "client"
+            },
+            {
+               "key": "internal.span.format",
+               "vStr": "otlp"
+            }
+         ],
+         "process": {
+            "serviceName": "scenario3",
+            "tags": [
+               {
+                  "key": "telemetry.sdk.language",
+                  "vStr": "python"
+               },
+               {
+                  "key": "telemetry.sdk.name",
+                  "vStr": "opentelemetry"
+               },
+               {
+                  "key": "telemetry.sdk.version",
+                  "vStr": "1.25.0"
+               }
+            ]
+         }
+      }
+   ]
+}
