@@ -5,10 +5,8 @@ import json
 from google.protobuf.json_format import MessageToDict
 
 # Get traces from Jaeger gRPC server
-def get_traces_for_service(service_name):
-    channel = grpc.insecure_channel('localhost:16685')
+def get_traces_for_service(service_name, channel):
     client = query_pb2_grpc.QueryServiceStub(channel)
-
 
     request = query_pb2.FindTracesRequest(
         query=query_pb2.TraceQueryParameters(
@@ -24,10 +22,9 @@ def get_traces_for_service(service_name):
 # Write traces locally to files
 def write_traces(service_name, traces):
     for i, trace in enumerate(traces):
-        for j, span in enumerate(trace["spans"]):
-            file_path = os.path.join(service_name, f"trace{i}_span{j}.json")
-            with open(file_path, 'w') as file:
-                json.dump(trace, file, indent=3)
+        file_path = os.path.join(service_name, f"trace{i}.json")
+        with open(file_path, 'w') as file:
+            json.dump(trace, file, indent=3)
 
 # Combine all traces to a single json file
 def combine_jsons(service_name):
@@ -52,11 +49,14 @@ def combine_jsons(service_name):
 
 if __name__ == "__main__":
     service_names = ["auth", "image", "persistence", "registry", "recommender", "webui"]
+    channel = grpc.insecure_channel('localhost:16685')
 
     for service_name in service_names:
         if not os.path.exists(service_name):
             os.makedirs(service_name)
 
-        traces = get_traces_for_service(service_name)
+        traces = get_traces_for_service(service_name, channel)
         write_traces(service_name, traces)
+    
+    for service_name in service_names:
         combine_jsons(service_name)

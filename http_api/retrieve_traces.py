@@ -3,7 +3,7 @@ import json
 import requests
 
 # Returns list of all traces for a service
-def get_traces(service):
+def get_traces_for_service(service):
     url = "http://localhost:16686/api/traces?service=" + service
 
     try:
@@ -16,20 +16,19 @@ def get_traces(service):
     return traces
 
 # Write traces locally to files
-def write_traces(path, traces):
+def write_traces(service_name, traces):
     for i, trace in enumerate(traces):
-        file_path = os.path.join(path, f"{i}.json")
+        file_path = os.path.join(service_name, f"trace{i}.json")
         with open(file_path, 'w') as file:
             json.dump(trace, file, indent=3)
 
 # Combine all JSON files in a directory into a single JSON file
 def combine_jsons(service_name):
-    path = f"traces/{service_name}"
     combined_traces = []
 
-    for filename in os.listdir(path):
+    for filename in os.listdir(service_name):
         if filename.endswith('.json'):
-            path = os.path.join(path, filename)
+            path = os.path.join(service_name, filename)
 
             with open(path, 'r') as file:
                 try:
@@ -44,14 +43,13 @@ def combine_jsons(service_name):
     with open(save_file_path, "w") as save_file:
         json.dump(combined_data, save_file, indent=3)
 
-service_names = ["auth", "image", "persistence", "registry", "recommender", "webui"]
+if __name__ == "__main__":
+    service_names = ["auth", "image", "persistence", "registry", "recommender", "webui"]
 
-for service_name in service_names:
-    path = f"traces/{service_name}"
-    
-    if not os.path.exists(path):
-        os.makedirs(path)
+    for service_name in service_names:
+        if not os.path.exists(service_name):
+            os.makedirs(service_name)
 
-    traces = get_traces(service_name)
-    write_traces(service_name, traces)
-    #combine_jsons(service_name)
+        traces = get_traces_for_service(service_name)
+        write_traces(service_name, traces)
+        combine_jsons(service_name)
