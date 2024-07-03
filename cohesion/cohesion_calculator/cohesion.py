@@ -54,39 +54,3 @@ def calculate_scom(jsonfile, service_name, weight_n_calls = True, api_type = "gr
     endpoint_calls = span.get_number_of_endpoint_calls(spans)
 
     return scom(grouped_spans, endpoint_calls, weight_n_calls)
-
-def lscc(grouped_spans):  
-    apis = filter_empty_apis(grouped_spans)
-    n_of_apis = len(apis)
-
-    all_tables = []
-
-    for url, tables in grouped_spans.items(): 
-        all_tables += tables
-    
-    n_tables = len(set(all_tables))
-
-    if n_tables == 0 and n_of_apis > 1: return 0
-    if n_tables > 0 and n_of_apis == 0: return 1
-    if n_of_apis == 1: return 1
-    if n_tables == 0 and n_of_apis == 0: return "Undefined (There are no tables and no endpoints)"
-
-    result = 0
-
-    for t in set(all_tables): 
-        apis_with_table = 0
-        for g in grouped_spans.values():
-            if t in g:
-                apis_with_table += 1
-
-        result += apis_with_table * (apis_with_table - 1)
-
-    return result / (n_tables*n_of_apis * (n_of_apis-1))
-
-def calculate_lscc(jsonfile, service_name, api_type = "grpc"):
-    spans = span.extract_spans(jsonfile, service_name, api_type)
-    grouped_spans = span.group_spans(spans)
-    
-    return lscc(grouped_spans)
-
-
