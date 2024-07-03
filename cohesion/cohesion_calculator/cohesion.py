@@ -1,4 +1,4 @@
-from cohesion_calculator import trace
+from cohesion_calculator import span
 
 def filter_empty_apis(apis):
     return {k: v for k, v in apis.items() if v}
@@ -13,8 +13,8 @@ def calculate_weighted_connection_intensity(tables1, tables2, weight1, weight2):
     connection_intensity = calculate_connection_intensity(tables1, tables2)
     return connection_intensity * weight1 * weight2
 
-def scom(grouped_traces, endpoint_calls, weight_n_calls = True):
-    apis = filter_empty_apis(grouped_traces)
+def scom(grouped_spans, endpoint_calls, weight_n_calls = True):
+    apis = filter_empty_apis(grouped_spans)
 
     n_of_apis = len(apis)
     if n_of_apis <= 1:
@@ -49,19 +49,19 @@ def scom(grouped_traces, endpoint_calls, weight_n_calls = True):
 
 
 def calculate_scom(jsonfile, service_name, weight_n_calls = True, api_type = "grpc"):
-    traces = trace.extract_traces(jsonfile, service_name, api_type)
-    grouped_traces = trace.group_traces(traces)
-    endpoint_calls = trace.get_number_of_endpoint_calls(traces)
+    spans = span.extract_spans(jsonfile, service_name, api_type)
+    grouped_spans = span.group_spans(spans)
+    endpoint_calls = span.get_number_of_endpoint_calls(spans)
 
-    return scom(grouped_traces, endpoint_calls, weight_n_calls)
+    return scom(grouped_spans, endpoint_calls, weight_n_calls)
 
-def lscc(grouped_traces):  
-    apis = filter_empty_apis(grouped_traces)
+def lscc(grouped_spans):  
+    apis = filter_empty_apis(grouped_spans)
     n_of_apis = len(apis)
 
     all_tables = []
 
-    for url, tables in grouped_traces.items(): 
+    for url, tables in grouped_spans.items(): 
         all_tables += tables
     
     n_tables = len(set(all_tables))
@@ -75,7 +75,7 @@ def lscc(grouped_traces):
 
     for t in set(all_tables): 
         apis_with_table = 0
-        for g in grouped_traces.values():
+        for g in grouped_spans.values():
             if t in g:
                 apis_with_table += 1
 
@@ -84,9 +84,9 @@ def lscc(grouped_traces):
     return result / (n_tables*n_of_apis * (n_of_apis-1))
 
 def calculate_lscc(jsonfile, service_name, api_type = "grpc"):
-    traces = trace.extract_traces(jsonfile, service_name, api_type)
-    grouped_traces = trace.group_traces(traces)
+    spans = span.extract_spans(jsonfile, service_name, api_type)
+    grouped_spans = span.group_spans(spans)
     
-    return lscc(grouped_traces)
+    return lscc(grouped_spans)
 
 

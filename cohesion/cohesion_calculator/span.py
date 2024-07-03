@@ -26,7 +26,7 @@ def extract_table_names(sql):
     # filters out empty matches ('') and flattens result to normal list
     return [match for sublist in matches for match in sublist if match]
 
-class Trace:
+class Span:
     def __init__(self, span_id, trace_id, db_statements, http_target, start_time):
         self.span_id = span_id
         self.trace_id = trace_id
@@ -36,7 +36,7 @@ class Trace:
         self.parent_endpoint = None
 
     def __repr__(self):
-        return f"trace(span_id={self.span_id}, trace_id={self.trace_id}, db_statements={self.db_statements}, http_target={self.http_target}, start_time={self.start_time})"
+        return f"span(span_id={self.span_id}, trace_id={self.trace_id}, db_statements={self.db_statements}, http_target={self.http_target}, start_time={self.start_time})"
 
     def get_endpoint_name(self):
         endpoint_name = self.http_target
@@ -73,80 +73,80 @@ class Trace:
 
         return None
 
-def group_traces_by_trace_id(traces):
-    grouped_traces = {}
+def group_spans_by_trace_id(spans):
+    grouped_spans = {}
 
-    for trace in traces:
-        trace_id = trace.trace_id
-        if trace_id not in grouped_traces:
-            grouped_traces[trace_id] = []
-        grouped_traces[trace_id].append(trace)
+    for span in spans:
+        trace_id = span.trace_id
+        if trace_id not in grouped_spans:
+            grouped_spans[trace_id] = []
+        grouped_spans[trace_id].append(span)
 
-    return grouped_traces
+    return grouped_spans
 
-def set_parent_endpoints(traces, service_name):
+def set_parent_endpoints(spans, service_name):
     # Create a dictionary to store parents
     parents = {}
-    grouped = group_traces_by_trace_id(traces)
+    grouped = group_spans_by_trace_id(spans)
 
     for k, g in grouped.items():
-        # sort traces of all traceids by start time
+        # sort spans of all traceids by start time
         g.sort(key=lambda x: x.start_time, reverse=False)
 
-        # go through all traces of a traceid and find the first which is from the service
+        # go through all spans of a traceid and find the first which is from the service
         for l in g:
             name = l.get_endpoint_name()
             if name != None and name.startswith(service_name): 
                 parents[k] = name
                 break
 
-    # set parents for all traces
-    for trace in traces:
-        endpoint_name = trace.get_endpoint_name()
+    # set parents for all spans
+    for span in spans:
+        endpoint_name = span.get_endpoint_name()
         if endpoint_name != None:
-            parent = parents.get(trace.trace_id)
+            parent = parents.get(span.trace_id)
             if parent:
-                trace.parent_endpoint = parent
+                span.parent_endpoint = parent
 
-    return traces
+    return spans
 
-def group_traces(traces, remove_duplicates = True):
-    grouped_traces = {}
+def group_spans(spans, remove_duplicates = True):
+    grouped_spans = {}
 
-    for trace in traces: 
-        table_names = trace.get_table_names()
+    for span in spans: 
+        table_names = span.get_table_names()
 
-        if table_names != None and trace.parent_endpoint != None:
-            endpoint_name = trace.parent_endpoint
+        if table_names != None and span.parent_endpoint != None:
+            endpoint_name = span.parent_endpoint
 
-            if endpoint_name not in grouped_traces:
-                grouped_traces[endpoint_name] = []
+            if endpoint_name not in grouped_spans:
+                grouped_spans[endpoint_name] = []
 
             for name in table_names:
                 if remove_duplicates:
-                    if name in grouped_traces[endpoint_name]:
+                    if name in grouped_spans[endpoint_name]:
                         continue
                     else:
-                        grouped_traces[endpoint_name].append(name)
-                else: grouped_traces[endpoint_name].append(name)
+                        grouped_spans[endpoint_name].append(name)
+                else: grouped_spans[endpoint_name].append(name)
 
-    return grouped_traces
+    return grouped_spans
 
 
-def extract_traces(result, service_name, api_type = "grpc"):
-    traces = []
+def extract_spans(result, service_name, api_type = "grpc"):
+    spans = []
 
     value = "vStr" if api_type == "grpc" else "value" 
     span_id_value = "spanId" if api_type == "grpc" else "spanID"
     trace_id_value = "traceId" if api_type == "grpc" else "traceID"
  
     for data in result["data"]:
-        for trace in data["spans"]:
+        for span in data["spans"]:
             db_statements = []
             http_target = ""
-            start_time = trace["startTime"]
+            start_time = span["startTime"]
 
-            for tag in trace["tags"]:
+            for tag in span["tags"]:
                 if "key" in tag:
                     if tag["key"] == "http.target":
                         http_target = tag[value]
@@ -154,72 +154,53 @@ def extract_traces(result, service_name, api_type = "grpc"):
                     if tag["key"] == "db.statement":
                         db_statements.append(tag[value])
                 
-            span_obj = Trace(
-                span_id=trace[span_id_value], 
-                trace_id=trace[trace_id_value],
+            span_obj = Span(
+                span_id=span[span_id_value], 
+                trace_id=span[trace_id_value],
                 http_target = http_target,
                 db_statements = db_statements,
                 start_time = start_time
             )
 
-            traces.append(span_obj)
+            spans.append(span_obj)
 
-    traces = set_parent_endpoints(traces, service_name)
+    spans = set_parent_endpoints(spans, service_name)
 
-    return traces
+    return spans
 
 
-def get_number_of_calls_per_table(traces):
-    grouped_traces = group_traces(traces, False)
+def get_number_of_calls_per_table(spans):
+    grouped_spans = group_spans(spans, False)
     calls = {}
 
-    for url, tables in grouped_traces.items():
+    for url, tables in grouped_spans.items():
         counter = Counter(tables)
         calls[url] = dict(counter)
 
     return calls
 
-def get_number_of_endpoint_calls(traces):
+def get_number_of_endpoint_calls(spans):
     n_calls = {}
 
-    for trace in traces:
-        parent = trace.parent_endpoint
+    for span in spans:
+        parent = span.parent_endpoint
         if parent is not None or '':
             n_calls[parent] = n_calls.setdefault(parent, 0) + 1
 
     return n_calls
 
-def get_grouped_traces_from_file(jsonfile, service_name, api_type = "grpc"):
-    traces = extract_traces(jsonfile, service_name, api_type)
+def get_grouped_spans_from_file(jsonfile, service_name, api_type = "grpc"):
+    spans = extract_spans(jsonfile, service_name, api_type)
 
-    return group_traces(traces)
+    return group_spans(spans)
 
 def get_number_of_calls_per_table_from_file(jsonfile, service_name, api_type = "grpc"):
-    traces = extract_traces(jsonfile, service_name, api_type)
+    spans = extract_spans(jsonfile, service_name, api_type)
 
-    return get_number_of_calls_per_table(traces)
+    return get_number_of_calls_per_table(spans)
 
 
 def get_number_of_endpoint_calls_from_file(jsonfile, service_name, api_type = "grpc"):
-    traces = extract_traces(jsonfile, service_name, api_type)
+    spans = extract_spans(jsonfile, service_name, api_type)
 
-    return get_number_of_endpoint_calls(traces)
-
-
-def main(): 
-    #file = open("../../teastore/test_data/auth_020624.json", 'r')
-    file = open("../../grpc/auth.json", "r")
-    #file = open("../../test_scenarios/test_data/scenario1.json", "r")
-    #file = open("traces-1719816901052.json", "r")
-    data = json.load(file)
-    file.close()
-    name = "tools.descartes.teastore.auth"
-    c = extract_traces(data, name)
-
-    grouped = group_traces(c) 
-    print(grouped)
-
-
-if __name__ == '__main__':
-    main()
-
+    return get_number_of_endpoint_calls(spans)

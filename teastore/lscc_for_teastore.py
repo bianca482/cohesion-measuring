@@ -1,5 +1,5 @@
 from cohesion_calculator import cohesion
-from cohesion_calculator import trace
+from cohesion_calculator import span
 import json
 
 files = ["auth.json", "image.json", "persistence.json", "recommender.json", "registry.json", "webui.json"]
@@ -12,11 +12,11 @@ for i, f in enumerate(files):
     file.close()
 
     c = cohesion.calculate_lscc(data, service_names[i])
-    grouped_traces = trace.get_grouped_traces_from_file(data, service_names[i])
-    #calls_per_table = trace.get_number_of_calls_per_table_from_file(data, service_names[i])
-    #endpoint_calls = trace.get_number_of_endpoint_calls_from_file(data, service_names[i])
+    grouped_spans = span.get_grouped_spans_from_file(data, service_names[i])
+    #calls_per_table = span.get_number_of_calls_per_table_from_file(data, service_names[i])
+    #endpoint_calls = span.get_number_of_endpoint_calls_from_file(data, service_names[i])
 
     print(f"LSCC Cohesion for Service {service_names[i]}: {c}")
-    print(f"Grouped traces for {f}: {grouped_traces}")
+    print(f"Grouped spans for {f}: {grouped_spans}")
     #print(f"Number of calls per table: {calls_per_table}")
     #print(f"Number of endpoint calls: {endpoint_calls}")
