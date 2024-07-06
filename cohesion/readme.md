@@ -8,16 +8,9 @@ If you do make adjustments, you have to build and install the library.
 
 ### Install dependencies
 
-Create a text file named requirements.txt with following content:
+1. Create a text file named requirements.txt with following content: `build  setuptools wheel twine pytest pytest-runner`
 
-`
-build 
-setuptools
-wheel
-twine
-pytest
-pytest-runner`
-Install all neccessary requirements using `pip install -r requirements.txt`
+2. Install all neccessary requirements using `pip install -r requirements.txt`
 
 ### Build library
 
