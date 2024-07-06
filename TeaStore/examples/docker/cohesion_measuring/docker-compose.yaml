@@ -9,9 +9,8 @@ services:
     environment:
       OTEL_SERVICE_NAME: registry
       OTEL_METRICS_EXPORTER: none
-      OTEL_TRACES_EXPORTER: jaeger #,grpc
+      OTEL_TRACES_EXPORTER: jaeger
       OTEL_EXPORTER_JAEGER_ENDPOINT: http://jaeger:14250
-      #OTEL_EXPORTER_OTLP_ENDPOINT: http://collector:4318
       OTEL_INSTRUMENTATION_JDBC_ENABLED: true
       OTEL_INSTRUMENTATION_JPA_ENABLED: true
       OTEL_LOG_LEVEL: info
@@ -39,9 +38,8 @@ services:
       DB_PORT: "3306"
       OTEL_SERVICE_NAME: persistence
       OTEL_METRICS_EXPORTER: none
-      OTEL_TRACES_EXPORTER: jaeger #,grpc
+      OTEL_TRACES_EXPORTER: jaeger
       OTEL_EXPORTER_JAEGER_ENDPOINT: http://jaeger:14250
-      #OTEL_EXPORTER_OTLP_ENDPOINT: http://collector:4318
       OTEL_INSTRUMENTATION_JDBC_ENABLED: true
       OTEL_INSTRUMENTATION_JPA_ENABLED: true
       OTEL_LOG_LEVEL: info
@@ -60,9 +58,8 @@ services:
       REGISTRY_HOST: "registry"
       OTEL_SERVICE_NAME: auth
       OTEL_METRICS_EXPORTER: none
-      OTEL_TRACES_EXPORTER: jaeger #,grpc
+      OTEL_TRACES_EXPORTER: jaeger
       OTEL_EXPORTER_JAEGER_ENDPOINT: http://jaeger:14250
-      #OTEL_EXPORTER_OTLP_ENDPOINT: http://collector:4318
       OTEL_INSTRUMENTATION_JDBC_ENABLED: true
       OTEL_INSTRUMENTATION_JPA_ENABLED: true
       OTEL_LOG_LEVEL: info
@@ -81,9 +78,8 @@ services:
       REGISTRY_HOST: "registry"
       OTEL_SERVICE_NAME: image
       OTEL_METRICS_EXPORTER: none
-      OTEL_TRACES_EXPORTER: jaeger #,grpc
+      OTEL_TRACES_EXPORTER: jaeger
       OTEL_EXPORTER_JAEGER_ENDPOINT: http://jaeger:14250
-      #OTEL_EXPORTER_OTLP_ENDPOINT: http://collector:4318
       OTEL_INSTRUMENTATION_JDBC_ENABLED: true
       OTEL_INSTRUMENTATION_JPA_ENABLED: true
       OTEL_LOG_LEVEL: info
@@ -102,9 +98,8 @@ services:
       REGISTRY_HOST: "registry"
       OTEL_SERVICE_NAME: recommender
       OTEL_METRICS_EXPORTER: none
-      OTEL_TRACES_EXPORTER: jaeger #,grpc
+      OTEL_TRACES_EXPORTER: jaeger
       OTEL_EXPORTER_JAEGER_ENDPOINT: http://jaeger:14250
-      #OTEL_EXPORTER_OTLP_ENDPOINT: http://collector:4318
       OTEL_INSTRUMENTATION_JDBC_ENABLED: true
       OTEL_INSTRUMENTATION_JPA_ENABLED: true
       OTEL_LOG_LEVEL: info
@@ -123,9 +118,8 @@ services:
       REGISTRY_HOST: "registry"
       OTEL_SERVICE_NAME: webui
       OTEL_METRICS_EXPORTER: none
-      OTEL_TRACES_EXPORTER: jaeger #,grpc
+      OTEL_TRACES_EXPORTER: jaeger
       OTEL_EXPORTER_JAEGER_ENDPOINT: http://jaeger:14250
-      #OTEL_EXPORTER_OTLP_ENDPOINT: http://collector:4318
       OTEL_INSTRUMENTATION_JDBC_ENABLED: true
       OTEL_INSTRUMENTATION_JPA_ENABLED: true
       OTEL_LOG_LEVEL: info
@@ -143,13 +137,3 @@ services:
       - "16685:16685" # grpc query service
     environment:
       - COLLECTOR_OTLP_ENABLED=true
-
-  #collector:
-  #  container_name: collector
-  #  image: otel/opentelemetry-collector-contrib
-  #  volumes:
-  #    - ./collector/otel_collector_config.yml:/etc/otel_collector_config.yml
-  #  command: ["--config", "/etc/otel_collector_config.yml"]
-  #  ports:
-  #    - 4317:4317 # OTLP gRPC receiver
-  #    - 4318:4318 # OTLP http receiver

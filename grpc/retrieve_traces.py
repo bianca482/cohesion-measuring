@@ -48,8 +48,8 @@ def combine_jsons(service_name):
         json.dump(combined_data, save_file, indent=3)
 
 if __name__ == "__main__":
-    service_names = ["auth", "image", "persistence", "registry", "recommender", "webui"]
-    channel = grpc.insecure_channel('localhost:16685')
+    service_names = ["auth", "image", "persistence", "registry", "recommender", "webui"] # adjust if neccessary
+    channel = grpc.insecure_channel('localhost:16685') # adjust if neccessary
 
     for service_name in service_names:
         if not os.path.exists(service_name):
