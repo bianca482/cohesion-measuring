@@ -1,8 +1,10 @@
 # Cohesion Calculator
 
-This project contains the definitions of the `cohesion_calculator` library which calculates Sensitive Class Cohesion Metric (SCOM) based on provided JSON input. The folder `cohesion\cohesion_calculator` provides the full implementation code for this. You can adjust and expand this implementation for your needs.
+This project contains the definitions of the `cohesion_calculator` library which calculates Sensitive Class Cohesion Metric (SCOM) based on provided JSON input. The folder `cohesion\cohesion_calculator` provides the full implementation code for this.
 
-Currently it can only be used locally, so whether you made adjustments or not, you have to build and install the library.
+The library can be installed by running `pip install cohesion_measuring`.
+
+You can adjust and expand this implementation for your needs. If you want to make adjustments you have to build and install the library as described in the following.
 
 ## Setup
 
@@ -30,9 +32,9 @@ In the `dist` folder, a new whl-file should have been generated. Adjust the name
 
 The library can be imported like `import cohesion_calculator`
 
-### NOT DONE YET - Publish to PyPI
+### Publish to PyPI
 
-The library has not yet been published.
-
-`twine upload dist/\*`
-`pip install cohesion_measuring`
+- Build: `python setup.py sdist bdist_wheel`
+- Check if everything works: `twine check dist/*`
+- Upload to PyPI via Twine `twine upload dist/\*`
+- Install: `pip install cohesion_measuring`

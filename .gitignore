@@ -14,3 +14,5 @@
 /grpc/webui/*
 /grpc/*.json
 /grpc/__pycache__
+/cohesion/.pypirc
+/cohesion/pypi.md
